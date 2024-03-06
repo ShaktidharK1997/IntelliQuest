@@ -50,9 +50,9 @@ function SearchPage() {
               <div key={index} className="paper">
                 <h4>{paper.title}</h4>
                 {expandedAbstract === index ? (
-                  <p>{paper.abstract} <button onClick={() => toggleAbstract(index)}>Read less</button></p>
+                  <p>{paper.abstract} <button className="readmore"onClick={() => toggleAbstract(index)}>Read less</button></p>
                 ) : (
-                  <p>{paper.abstract.substring(0, 100)}... <button onClick={() => toggleAbstract(index)}>Read more</button></p>
+                  <p>{paper.abstract.substring(0, 100)}... <button className="readmore" onClick={() => toggleAbstract(index)}>Read more</button></p>
                 )}
                 <p>Authors: {paper.authors.join(', ')}</p>
               </div>

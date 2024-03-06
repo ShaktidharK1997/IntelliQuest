@@ -4,20 +4,42 @@ from .models import Paper, Author
 import requests 
 import time
 from django_ratelimit.decorators import ratelimit
-
+import uuid
 from requests.exceptions import RequestException
+from django.db import transaction
 
 SEMANTIC_SCHOLAR_API_KEY = '8kxH5DVIYTaE4X2naV3l83RYdf0bYxg7DSFdd7U3'
 
+CORE_API_KEY = '4yDRVsbu3MaJxAfQnWUjXtkHT2NehlKE'
+
 # Create your views here.
+
+#Search in CORE API
+def make_CORE_request(endpoint, query_params = None):
+    url = f'https://api.core.ac.uk/v3/{endpoint}'
+
+    query_params['api-key'] = CORE_API_KEY
+
+    try:
+        response = requests.get(url,params = query_params)
+        response.raise_for_status()
+        return response.json()
+    except RequestException as e:
+        print(e)
+        return None
+
+    
 #Search in Semantic Scholar API 
 def make_semantic_scholar_request(endpoint, query_params= None):
     url = f'https://api.semanticscholar.org/graph/v1/{endpoint}'
     headers = {'x-api-key': SEMANTIC_SCHOLAR_API_KEY}
     try:
-        response = requests.get(url, params=query_params, headers=headers)
+        response = requests.get(url, params=query_params, headers=headers, timeout=2)
         response.raise_for_status()
         return response.json()
+    except requests.exceptions.Timeout as e:
+        print("The request timed out:", e)
+        return None
     except RequestException as e:
         print(e)
         return None
@@ -59,47 +81,90 @@ def search_articles(request):
 
     #Search in Local Database
     db_results = Paper.objects.filter(title__icontains = query)
+    
+    existing_paper_ids = set(Paper.objects.values_list('paperID', flat=True))
 
     combined_results = []
 
     intermediate_results = []
 
-
     query_params = {'query': query, 'limit':10}
 
-    api_results = make_semantic_scholar_request('paper/search', query_params=query_params)
+    api_results_semanticsearch = make_semantic_scholar_request('paper/search', query_params=query_params)
     #Check response status
-    for paper in api_results['data']:
-            
-        if not Paper.objects.filter(paperID = paper['paperId']).exists():
-            paper_details = get_paper_details(paper['paperId'])
-            if paper_details:
-                if paper_details.get('abstract'):
-                    abstract = paper_details['abstract']
-                else:
-                    abstract = 'Abstract not available'
+
+    if api_results_semanticsearch and 'data' in api_results_semanticsearch:
+
+        for paper in api_results_semanticsearch['data']:
                 
-                new_paper = Paper.objects.create(
-                    title=paper_details['title'],
-                    paperID=paper['paperId'],
-                    year=paper_details.get('year'),
-                    abstract=abstract
-                )
-
-                for author_new in paper_details['authors']:
-                    if Author.objects.filter(authorID = author_new['authorId']).exists():
-                        new_author = Author.objects.get(authorID = author_new['authorId'])
+            if not Paper.objects.filter(paperID = paper['paperId']).exists():
+                paper_details = get_paper_details(paper['paperId'])
+                if paper_details:
+                    if paper_details.get('abstract'):
+                        abstract = paper_details['abstract']
                     else:
-                        new_author = Author.objects.create(
-                            authorID = (author_new['authorId']),
-                            name = author_new['name']
-                        )
-                    new_paper.authors.add(new_author)
-                intermediate_results.append(new_paper)
-                new_paper.save()
+                        abstract = 'Abstract not available'
+                    
+                    new_paper = Paper.objects.create(
+                        title=paper_details['title'],
+                        paperID=paper['paperId'],
+                        year=paper_details.get('year'),
+                        abstract=abstract
+                    )
 
-    for paper in db_results:
-        authors_name = list(paper.authors.values_list('name', flat=True))
+                    for author_new in paper_details['authors']:
+                        if Author.objects.filter(authorID = author_new['authorId']).exists():
+                            new_author = Author.objects.get(authorID = author_new['authorId'])
+                        else:
+                            new_author = Author.objects.create(
+                                authorID = (author_new['authorId']),
+                                name = author_new['name']
+                            )
+                        new_paper.authors.add(new_author)
+                    intermediate_results.append(new_paper)
+                    new_paper.save()
+
+    query_params={'page' : 1,
+                  'pageSize' : 4,
+                  'q' : query}
+    
+    api_results_coresearch = make_CORE_request('search/works', query_params=query_params)
+
+    new_papers = []
+
+    new_authors_relations = []
+
+    if api_results_coresearch and 'results' in api_results_coresearch:
+        for paper in api_results_coresearch['results']:
+            paperid = paper['id']
+            if paperid not in existing_paper_ids:
+                new_paper = Paper(
+                    title=paper['title'],
+                    paperID=paperid,
+                    year=paper['yearPublished'],
+                    abstract=paper['abstract']
+                )
+                new_papers.append(new_paper)
+                existing_paper_ids.add(paperid)
+
+        new_papers_lookup = {paper.paperID: paper for paper in Paper.objects.filter(paperID__in=[p.paperID for p in new_papers])}
+    
+        for paper in api_results_coresearch['results']:
+            for author_data in paper.get('authors', []):
+                author, created = Author.objects.get_or_create(
+                    name=author_data['name'],
+                    defaults={'authorID': str(uuid.uuid4())}
+                )
+                if paper['id'] in new_papers_lookup:
+                    new_authors_relations.append(
+                        Paper.authors.through(paper_id=new_papers_lookup[paper['id']].id, author_id=author.id)
+                    )
+
+        Paper.authors.through.objects.bulk_create(new_authors_relations, ignore_conflicts=True)
+
+    # Assuming db_results is already populated
+    for paper in list(db_results) + new_papers:
+        authors_name = [author.name for author in paper.authors.all()]
         combined_results.append({
             'title': paper.title,
             'paperID': paper.paperID,
@@ -108,15 +173,4 @@ def search_articles(request):
             'authors': authors_name
         })
 
-    for paper in intermediate_results:
-        if not paper in combined_results:
-            authors_name = list(paper.authors.values_list('name', flat=True))
-            combined_results.append({
-            'title': paper.title,
-            'paperID': paper.paperID,
-            'year': paper.year,
-            'abstract': paper.abstract,
-            'authors': authors_name
-            })
-    
     return JsonResponse({'results': combined_results})
