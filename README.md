@@ -7,6 +7,7 @@ Our project aims to develop a specialized search engine dedicated to academic pa
 
 Here are some major features of our project.
 * Advanced Search Options: This will allow users to search by keywords, authors, publication dates, journals, and citation metrics.
+* Download Papers:  Users will have the ability to seamlessly download white papers directly from the platform.
 * Filtering and Sorting: This should enable users to filter search results by relevance, publication date, citation count, and journal impact factor.
 * Relevance Ranking: Our search engine should prioritize the most relevant and impactful research papers on top.
 * Citation Analysis: The search engine should provide information on the number of citations a paper has received and its overall impact in the field.
