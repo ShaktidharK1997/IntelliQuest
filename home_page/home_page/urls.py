@@ -16,7 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from .views import home, signin, settings, search_results
 
 urlpatterns = [
+    path('', home, name='home'),
+    path('search/', search_results, name='search_results'),
+    path('', signin, name='signin'),  # Placeholder for sign-in functionality
+    path('', settings, name='settings'),  # Placeholder for settings
     path('admin/', admin.site.urls),
 ]
