@@ -58,7 +58,7 @@ function SearchPage() {
               </div>
             ))
           ) : (
-            <p>No results found</p>
+            <p>One Stop portal for searching anything academic!</p>
           )}
         </div>
       </div>
