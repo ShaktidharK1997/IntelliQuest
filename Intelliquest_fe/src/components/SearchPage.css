@@ -66,6 +66,17 @@
     cursor: pointer;
 }
 
+.readmore{
+    margin-top: 20px;
+    padding: 5px 5px;
+    font-size: 10px;
+    color: var(--text-color-white);
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+}
+
 .header-right button {
     text-decoration: none;
     margin-right: 15px;
