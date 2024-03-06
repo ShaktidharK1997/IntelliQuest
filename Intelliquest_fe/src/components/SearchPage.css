@@ -1,0 +1,127 @@
+:root {
+    --primary-color: #007bff;
+    --border-color: #ccc;
+    --border-radius: 5px;
+    --background-light: #f9f9f9;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --text-color-white: #fff;
+}
+
+.search-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.logo {
+    font-size: 24px;
+    text-decoration: none;
+    color: #000;
+}
+
+.header-right {
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin-right: 20px; /* Adjust as needed */
+    margin-top: 20px; /* Adjust as needed */
+    display: flex;
+}
+
+.search-container {
+    margin: 0;
+}
+
+.search-container h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+.search-container form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.search-container input[type="text"] {
+    padding: 10px;
+    font-size: 17px;
+    border: 1px solid #ddd;
+    margin-right: 10px;
+    width: 300px; /* Adjust as needed */
+}
+
+.search-container button {
+    padding: 10px 15px;
+    font-size: 17px;
+    color: white;
+    background-color: #1a73e8; /* Adjust the background color as needed */
+    border: none;
+    cursor: pointer;
+}
+
+
+.header-right button {
+    text-decoration: none;
+    margin-right: 15px;
+    padding: 5px 10px;
+    background: none;
+    border: 1px solid #000; /* Add a border or customize as needed */
+    cursor: pointer;
+}
+
+.search-input {
+    margin-bottom: 10px;
+    padding: 10px;
+    width: 300px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+}
+
+.search-button {
+    padding: 10px 20px;
+    border: none;
+    background-color: var(--primary-color);
+    color: var(--text-color-white);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+}
+
+.results-container {
+    margin-top: 20px;
+}
+
+.paper {
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #eee;
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 4px var(--shadow-color);
+    background-color: var(--background-light);
+}
+
+.paper h4 {
+    margin: 0 0 10px 0;
+}
+
+.paper p {
+    margin: 5px 0;
+}
+
+@media (max-width: 600px) {
+    .search-input, .search-button {
+        width: 100%; /* Full width on smaller screens */
+        margin-bottom: 15px; /* Increased space for better touch interaction */
+    }
+}
+
+.search-button:hover, .search-button:focus {
+    background-color: darken(var(--primary-color), 10%);
+    outline: none; /* Removes outline on focus for a cleaner look */
+}
+
+.search-input:focus {
+    border-color: lighten(var(--border-color), 10%);
+    outline: none; /* Improves focus indication */
+}
