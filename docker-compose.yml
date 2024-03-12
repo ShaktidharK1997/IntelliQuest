@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:13
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: dbname
+
+  backend:
+    build: ./IntelliQuest
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./IntelliQuest:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DB_NAME=dbname
+      - DB_USER=user
+      - DB_PASSWORD=password
+      - DB_HOST=db
+
+  frontend:
+    build: ./Intelliquest_fe
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
