@@ -26,6 +26,7 @@ services:
       - DB_USER=user
       - DB_PASSWORD=password
       - DB_HOST=db
+      - DB_PORT=5432
 
   frontend:
     build: ./Intelliquest_fe

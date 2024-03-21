@@ -96,14 +96,16 @@ def search_articles(request):
     if api_results_semanticsearch and 'data' in api_results_semanticsearch:
 
         for paper in api_results_semanticsearch['data']:
-                
+            """
             if not Paper.objects.filter(paperID = paper['paperId']).exists():
+            """
+            if paper['paperId'] not in existing_paper_ids:
                 paper_details = get_paper_details(paper['paperId'])
                 if paper_details:
                     if paper_details.get('abstract'):
                         abstract = paper_details['abstract']
                     else:
-                        abstract = 'Abstract not available'
+                        abstract = 'Abstract not available.'
                     
                     new_paper = Paper.objects.create(
                         title=paper_details['title'],
@@ -113,6 +115,8 @@ def search_articles(request):
                     )
 
                     for author_new in paper_details['authors']:
+                        """ 
+                        Refactoring to get_or_create
                         if Author.objects.filter(authorID = author_new['authorId']).exists():
                             new_author = Author.objects.get(authorID = author_new['authorId'])
                         else:
@@ -120,6 +124,12 @@ def search_articles(request):
                                 authorID = (author_new['authorId']),
                                 name = author_new['name']
                             )
+                             """
+                        new_author, created = Author.objects.get_or_create(
+                            authorID=author_new['authorId'],
+                            defaults={'name': author_new['name']}
+                        )
+
                         new_paper.authors.add(new_author)
                     intermediate_results.append(new_paper)
                     new_paper.save()
@@ -136,16 +146,17 @@ def search_articles(request):
 
     if api_results_coresearch and 'results' in api_results_coresearch:
         for paper in api_results_coresearch['results']:
-            paperid = paper['id']
-            if paperid not in existing_paper_ids:
+            if paper['id'] not in existing_paper_ids:
                 new_paper = Paper(
                     title=paper['title'],
-                    paperID=paperid,
+                    paperID=paper['id'],
                     year=paper['yearPublished'],
                     abstract=paper['abstract']
                 )
                 new_papers.append(new_paper)
-                existing_paper_ids.add(paperid)
+                existing_paper_ids.add(paper['id'])
+
+        Paper.objects.bulk_create(new_papers)
 
         new_papers_lookup = {paper.paperID: paper for paper in Paper.objects.filter(paperID__in=[p.paperID for p in new_papers])}
     
@@ -161,6 +172,8 @@ def search_articles(request):
                     )
 
         Paper.authors.through.objects.bulk_create(new_authors_relations, ignore_conflicts=True)
+    
+    
 
     # Assuming db_results is already populated
     for paper in list(db_results) + new_papers:
