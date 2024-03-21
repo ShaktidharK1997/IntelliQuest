@@ -1,14 +1,19 @@
 import React from 'react';
-import SearchPage from './components/SearchPage';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import SearchPage from './components/SearchPage';
 
 function App() {
   return (
-    <div className="App">
-      <SearchPage />
-    </div>
+    <BrowserRouter>
+      <div className="App">
+        <Routes>
+          {/* Define the route for SearchPage */}
+          <Route path="/" element={<SearchPage />} />
+          {/* You can add more Route components here for other pages */}
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
 }
 
 export default App;
-
