@@ -147,16 +147,20 @@ def search_articles(request):
     if api_results_coresearch and 'results' in api_results_coresearch:
         for paper in api_results_coresearch['results']:
             if paper['id'] not in existing_paper_ids:
+                if paper['abstract']:
+                    abstract = paper['abstract']
+                else: 
+                    abstract = 'Abstract not available.'
                 new_paper = Paper(
                     title=paper['title'],
                     paperID=paper['id'],
                     year=paper['yearPublished'],
-                    abstract=paper['abstract']
+                    abstract=abstract
                 )
                 new_papers.append(new_paper)
                 existing_paper_ids.add(paper['id'])
 
-        Paper.objects.bulk_create(new_papers)
+        #Paper.objects.bulk_create(new_papers)
 
         new_papers_lookup = {paper.paperID: paper for paper in Paper.objects.filter(paperID__in=[p.paperID for p in new_papers])}
     
