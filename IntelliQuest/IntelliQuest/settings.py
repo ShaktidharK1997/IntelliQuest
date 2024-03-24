@@ -27,7 +27,8 @@ SECRET_KEY = 'django-insecure-xmj@=tf4!60t9ph2%33zdh&c$&3c#gh-6)!64zwp02yzjaarf$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# ADDING THIS LINE TO MAKE SURE 0.0.0.0 IS ALLOWED
+ALLOWED_HOSTS = ['localhost', '0.0.0.0', '127.0.0.1']
 
 
 # Application definition
@@ -42,9 +43,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
+    'social_django',
+    'social_core.backends.google.GoogleOAuth2',
 ]
 
 REST_FRAMEWORK = {
+    
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],

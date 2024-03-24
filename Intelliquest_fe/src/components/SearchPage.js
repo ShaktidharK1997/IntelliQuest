@@ -1,11 +1,18 @@
 import React, { useState } from 'react';
 import './SearchPage.css';
+import { useNavigate } from 'react-router-dom';
 
 
 function SearchPage() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [expandedAbstract, setExpandedAbstract] = useState(null); 
+
+  // Link to signin page
+  let navigate = useNavigate();
+  const handleSignInClick = () => {
+    navigate('/signin'); // Navigate to the sign-in page
+  };
 
   const handleSearch = async () => {
     // Replace with your Django API endpoint
@@ -40,7 +47,7 @@ function SearchPage() {
         <a href="{% url 'home' %}" class="logo">IntelliQuest</a>
       </div>
       <div className="header-right">
-        <button onClick={() => window.location='#signin'}>Sign In</button>
+      <button onClick={handleSignInClick}>Sign In</button>
         <button onClick={() => window.location='#settings'}>Settings</button>
       </div>
 

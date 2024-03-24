@@ -8,6 +8,10 @@ import uuid
 from requests.exceptions import RequestException
 from django.db import transaction
 
+from django.contrib.auth import authenticate
+from rest_framework.decorators import api_view
+from rest_framework import status
+
 SEMANTIC_SCHOLAR_API_KEY = '8kxH5DVIYTaE4X2naV3l83RYdf0bYxg7DSFdd7U3'
 
 CORE_API_KEY = '4yDRVsbu3MaJxAfQnWUjXtkHT2NehlKE'
@@ -191,3 +195,23 @@ def search_articles(request):
         })
 
     return JsonResponse({'results': combined_results})
+# Login page
+@api_view(['POST'])
+def sign_in(request):
+    email = request.data.get('email')
+    password = request.data.get('password')
+    user = authenticate(username=email, password=password)
+    if user is not None:
+        # Sign in success
+        return JsonResponse({"message": "Sign in successful"}, status=status.HTTP_200_OK)
+    else:
+        # Sign in failed
+        return JsonResponse({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
+    
+# Sign up page
+@api_view(['POST'])
+def sign_up(request):
+    email = request.data.get('email')
+    password = request.data.get('password')
+    # Create user logic here
+    return JsonResponse({"message": "Sign up successful"}, status=status.HTTP_201_CREATED)
