@@ -43,8 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
-    'social_django',
-    'social_core.backends.google.GoogleOAuth2',
+    #'social_django',
+    #'social_core.backends.google.GoogleOAuth2',
 ]
 
 REST_FRAMEWORK = {
