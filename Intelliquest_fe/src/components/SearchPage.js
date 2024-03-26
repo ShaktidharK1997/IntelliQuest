@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import './SearchPage.css';
+import Logo from '../logo.svg';
+import CenterLogo from '../center_logo.svg';
 
 
 function SearchPage() {
@@ -21,6 +23,11 @@ function SearchPage() {
     }
   };
 
+  function resetSearch() {
+    setQuery(''); // Resets the query string
+    setResults([]); // Resets the search results
+  }
+
   const toggleAbstract = (index) => {
     setExpandedAbstract(expandedAbstract === index ? null : index);
   };
@@ -36,8 +43,10 @@ function SearchPage() {
 
   return (
     <>
-      <div className = "header">
-        <a href="{% url 'home' %}" class="logo">IntelliQuest</a>
+      <div className="header">
+        <div className="logo" onClick={resetSearch} style={{cursor: 'pointer'}}>
+          <img src={Logo} alt="IntelliQuest Logo" />
+        </div>
       </div>
       <div className="header-right">
         <button onClick={() => window.location='#signin'}>Sign In</button>
@@ -45,6 +54,11 @@ function SearchPage() {
       </div>
 
       <div className='search-container'>
+        <div className="center-logo-container" onClick={resetSearch} style={{cursor: 'pointer'}}>
+          <img src={CenterLogo} alt="Center Logo" className="center-logo" />
+          <h1>IntelliQuest</h1>
+        </div>
+
         <input className='search-input'
           type="text"
           value={query}

@@ -27,6 +27,12 @@ body {
     font-size: 24px;
 }
 
+.logo img {
+    width: 30px; /* Adjust width as needed */
+    padding-top: 20px; /* Increase top padding */
+    padding-left: 20px; /* Increase left padding */
+}
+
 .header-right {
     position: absolute;
     right: 20px;
@@ -34,7 +40,28 @@ body {
     display: flex;
 }
 
-.search-container {
+.center-logo-container {
+    text-align: center;
+    margin-bottom: 20px; /* Space between the logo, heading, and search input */
+  }
+  
+  .center-logo {
+    width: 100px; /* Adjust width as needed */
+    margin: 0 auto; /* Center the logo */
+    display: block;
+  }
+  
+  .center-logo-container h1 {
+    margin-top: 10px; /* Space between logo and heading */
+    font-size: 2em; /* Adjust the font size as needed */
+  }
+
+.search-container h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+.search-container form {
     display: flex;
     flex-direction: column;
     align-items: center;
