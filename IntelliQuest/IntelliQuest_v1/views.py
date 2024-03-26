@@ -12,6 +12,13 @@ from django.contrib.auth import authenticate
 from rest_framework.decorators import api_view
 from rest_framework import status
 
+from django.contrib.auth import get_user_model
+from rest_framework.response import Response
+
+from django.contrib.auth import authenticate, login
+
+
+
 SEMANTIC_SCHOLAR_API_KEY = '8kxH5DVIYTaE4X2naV3l83RYdf0bYxg7DSFdd7U3'
 
 CORE_API_KEY = '4yDRVsbu3MaJxAfQnWUjXtkHT2NehlKE'
@@ -200,18 +207,23 @@ def search_articles(request):
 def sign_in(request):
     email = request.data.get('email')
     password = request.data.get('password')
-    user = authenticate(username=email, password=password)
+    user = authenticate(request, username=email, password=password)
     if user is not None:
-        # Sign in success
-        return JsonResponse({"message": "Sign in successful"}, status=status.HTTP_200_OK)
+        login(request, user)
+        return Response({"message": "Sign in successful"}, status=status.HTTP_200_OK)
     else:
-        # Sign in failed
-        return JsonResponse({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
     
 # Sign up page
 @api_view(['POST'])
 def sign_up(request):
+    User = get_user_model()
     email = request.data.get('email')
     password = request.data.get('password')
-    # Create user logic here
-    return JsonResponse({"message": "Sign up successful"}, status=status.HTTP_201_CREATED)
+    if not User.objects.filter(username=email).exists():
+        user = User.objects.create_user(username=email, email=email, password=password)
+        # If you have additional fields, set them here before calling save()
+        user.save()
+        return Response({"message": "Sign up successful"}, status=status.HTTP_201_CREATED)
+    else:
+        return Response({"error": "User with this email already exists"}, status=status.HTTP_400_BAD_REQUEST)
