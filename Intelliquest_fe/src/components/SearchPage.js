@@ -32,6 +32,15 @@ function SearchPage() {
     setExpandedAbstract(expandedAbstract === index ? null : index);
   };
 
+  const renderAbstract = (paper, index) => {
+    const abstractText = paper.abstract || "Abstract not available";
+    return expandedAbstract === index ? (
+      <p>{abstractText} <button className="readmore" onClick={() => toggleAbstract(index)}>Read less</button></p>
+    ) : (
+      <p>{abstractText.substring(0, 100)}... <button className="readmore" onClick={() => toggleAbstract(index)}>Read more</button></p>
+    );
+  };
+
   return (
     <>
       <div className="header">
@@ -63,12 +72,9 @@ function SearchPage() {
             results.map((paper, index) => (
               <div key={index} className="paper">
                 <h4>{paper.title}</h4>
-                {expandedAbstract === index ? (
-                  <p>{paper.abstract} <button className="readmore"onClick={() => toggleAbstract(index)}>Read less</button></p>
-                ) : (
-                  <p>{paper.abstract.substring(0, 100)}... <button className="readmore" onClick={() => toggleAbstract(index)}>Read more</button></p>
-                )}
+                {renderAbstract(paper, index)}
                 <p>Authors: {paper.authors.join(', ')}</p>
+                <p>Year : {paper.year}</p>
               </div>
             ))
           ) : (

@@ -4,24 +4,27 @@
     --border-radius: 5px;
     --background-light: #f9f9f9;
     --shadow-color: rgba(0, 0, 0, 0.1);
+    --text-color: #333; /* Generalized text color variable */
+    --text-color-light: #666; /* Lighter text color for less emphasis */
     --text-color-white: #fff;
-    --text-color-black: #000;
-    --input-border-color-focus: rgba(204, 204, 204, 0.75); /* Adjusted for CSS compatibility */
-    --button-background-color-hover: #0056b3; /* Darkened version of primary color */
+    --input-border-color-focus: rgba(204, 204, 204, 0.75);
+    --button-background-color-hover: #0056b3;
 }
 
-.search-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
+body {
+    font-family: 'Arial', sans-serif; /* Ensure a consistent font base */
+    background-color: var(--background-light);
     margin: 0;
+    padding: 0;
+}
+
+.logo, .header-right button {
+    color: var(--text-color);
+    text-decoration: none;
 }
 
 .logo {
     font-size: 24px;
-    text-decoration: none;
-    color: var(--text-color-black);
 }
 
 .logo img {
@@ -32,10 +35,8 @@
 
 .header-right {
     position: absolute;
-    right: 0;
-    top: 0;
-    margin-right: 20px;
-    margin-top: 20px;
+    right: 20px;
+    top: 20px;
     display: flex;
 }
 
@@ -62,80 +63,35 @@
 
 .search-container form {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+    padding: 20px;
 }
 
+.search-container form,
 .search-container input[type="text"],
-.search-input {
+.search-button {
+    width: 100%;
+    max-width: 300px; /* Controls the maximum width */
+}
+
+.search-container input[type="text"] {
     padding: 10px;
     font-size: 17px;
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
-    width: 300px;
-    margin-right: 10px; /* Adjusted for search-container input */
+    margin-bottom: 15px; /* Space between input and button */
 }
 
-.search-container button,
 .search-button {
-    margin-top: 20px;
     padding: 10px 15px;
     font-size: 17px;
-    color: var(--text-color-white);
     background-color: var(--primary-color);
+    color: var(--text-color-white);
     border: none;
     border-radius: var(--border-radius);
     cursor: pointer;
-}
-
-.readmore{
-    margin-top: 20px;
-    padding: 5px 5px;
-    font-size: 10px;
-    color: var(--text-color-white);
-    background-color: var(--primary-color);
-    border: none;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-}
-
-.header-right button {
-    text-decoration: none;
-    margin-right: 15px;
-    padding: 5px 10px;
-    background: none;
-    border: 1px solid var(--text-color-black);
-    cursor: pointer;
-}
-
-.results-container {
-    margin-top: 20px;
-}
-
-.paper {
-    margin-bottom: 20px;
-    padding: 10px;
-    border: 1px solid #eee;
-    border-radius: var(--border-radius);
-    box-shadow: 0 2px 4px var(--shadow-color);
-    background-color: var(--background-light);
-}
-
-.paper h4 {
-    margin: 0 0 10px 0;
-}
-
-.paper p {
-    margin: 5px 0;
-}
-
-@media (max-width: 600px) {
-    .search-container input[type="text"],
-    .search-container button {
-        width: 100%;
-        margin-right: 0; /* Remove margin for full width on smaller screens */
-        margin-bottom: 15px;
-    }
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
 }
 
 .search-button:hover,
@@ -147,4 +103,41 @@
 .search-input:focus {
     border-color: var(--input-border-color-focus);
     outline: none;
+}
+
+.results-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.paper {
+    background-color: var(--text-color-white);
+    box-shadow: var(--shadow-color) 0 4px 8px;
+    border-radius: var(--border-radius);
+    padding: 20px;
+    margin: 10px;
+    width: 100%;
+    max-width: 300px; /* Consistent with form elements */
+    box-sizing: border-box;
+}
+
+.paper h4 {
+    margin-top: 0;
+    color: var(--text-color);
+}
+
+.paper p {
+    color: var(--text-color-light);
+    font-size: 14px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .header-right {
+        position: static; /* Adjust position for smaller screens */
+        margin: 20px 0;
+        justify-content: center;
+    }
 }
