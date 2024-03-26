@@ -1,0 +1,71 @@
+.signup-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: var(--background-light);
+}
+
+.signup-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+    box-shadow: var(--shadow-color) 0 4px 8px;
+    border-radius: var(--border-radius);
+    background-color: var(--text-color-white);
+}
+
+.signup-container input[type="email"],
+.signup-container input[type="password"] {
+    width: 100%;
+    max-width: 300px;
+    padding: 10px;
+    margin: 0;
+    font-size: 17px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    outline: none;
+}
+
+.signup-container button {
+    width: 100%;
+    max-width: 300px;
+    padding: 10px 15px;
+    font-size: 17px;
+    background-color: var(--primary-color);
+    color: var(--text-color-white);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.signup-container button:hover,
+.signup-container button:focus {
+    background-color: var(--button-background-color-hover);
+    outline: none;
+}
+
+/* Additional styles for Google Login button to make it consistent with the form */
+.google-login-button {
+    width: 100%;
+    max-width: 300px; /* Keep consistent with other form elements */
+    margin-top: 20px; /* Spacing between sign up form and Google login button */
+    font-size: 17px; /* Match font size with form buttons */
+    /* Additional styling can be applied to match the button more closely with your design */
+}
+
+/* Keep the responsiveness in line with the rest of the application */
+@media (max-width: 600px) {
+    .signup-container {
+        padding: 20px;
+    }
+
+    .signup-container form,
+    .google-login-button {
+        width: 100%;
+        max-width: none;
+    }
+}

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './SignInPage.css'; // Make sure to import the CSS file
 
 function SignInPage() {
   const [email, setEmail] = useState('');
@@ -19,7 +20,7 @@ function SignInPage() {
     if (response.ok) {
       const data = await response.json();
       console.log('Sign in successful', data);
-      // Redirect or do something upon successful sign in
+      navigate('/dashboard'); // Assuming you have a dashboard route to navigate to
     } else {
       console.error('Failed to sign in');
     }
@@ -27,7 +28,7 @@ function SignInPage() {
 
   return (
     <div className="signin-container">
-      <form onSubmit={handleSignIn}>
+      <form onSubmit={handleSignIn} className="signin-form">
         <input
           type="email"
           value={email}
@@ -42,9 +43,8 @@ function SignInPage() {
           placeholder="Password"
           required
         />
-        <p>Do not have an account? Register an account.</p>
-        <button type="submit">Sign In</button>
-        <button onClick={() => navigate('/signup')}>Sign Up</button>
+        <p>Do not have an account? <button onClick={() => navigate('/signup')} className="link-button">Register an account.</button></p>
+        <button type="submit" className="signin-button">Login</button>
       </form>
     </div>
   );
