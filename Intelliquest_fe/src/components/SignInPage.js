@@ -9,22 +9,29 @@ function SignInPage() {
 
   const handleSignIn = async (e) => {
     e.preventDefault();
-    const response = await fetch('http://127.0.0.1:8000/IntelliQuest_v1/signin/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password }),
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      console.log('Sign in successful', data);
-      navigate('/dashboard'); // Assuming you have a dashboard route to navigate to
-    } else {
-      console.error('Failed to sign in');
+    try {
+      const response = await fetch('http://localhost:8000/IntelliQuest_v1/signin/', { // Make sure this URL matches your Django sign-in endpoint
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Sign in successful', data);
+        localStorage.setItem('token', data.token); // Assuming the response includes a token
+        navigate('/dashboard'); // Redirect to the dashboard or appropriate page
+      } else {
+        console.error('Failed to sign in');
+        // Handle errors, e.g., show a message to the user
+      }
+    } catch (error) {
+      console.error('Error during sign in:', error);
     }
   };
+  
 
   return (
     <div className="signin-container">
