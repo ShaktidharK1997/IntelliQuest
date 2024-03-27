@@ -3,9 +3,12 @@ import './SearchPage.css';
 import { useNavigate } from 'react-router-dom';
 import Logo from '../logo.svg';
 import CenterLogo from '../center_logo.svg';
+import { useAuth } from '../contexts/AuthContext';
+
 
 
 function SearchPage() {
+  const { currentUser, signOut } = useAuth();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [expandedAbstract, setExpandedAbstract] = useState(null); 
@@ -56,7 +59,14 @@ function SearchPage() {
         </div>
       </div>
       <div className="header-right">
-      <button onClick={handleSignInClick}>Sign In</button>
+      {currentUser ? (
+        <>
+          <span>{`User ID: ${currentUser.id}`}</span>
+          <button onClick={signOut}>Sign Out</button>
+        </>
+      ) : (
+        <button onClick={handleSignInClick}>Sign In</button>
+      )}
         <button onClick={() => window.location='#settings'}>Settings</button>
       </div>
 
