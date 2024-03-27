@@ -1,0 +1,41 @@
+/* Resets the padding and margin for all elements. */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* Includes padding and border in the element's total width and height */
+}
+
+/* This ensures the header is fixed to the top of the page */
+.header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background-color: #282c34;
+  z-index: 10; /* Higher z-index ensures the header is above other elements */
+  /* rest of your header styling */
+}
+
+/* Sidebar should start below the header and be as tall as the remaining viewport */
+.sidebar {
+  position: sticky;
+  top: 60px; /* Adjust this value based on the actual height of your header */
+  height: calc(100vh - 60px); /* Adjust this value based on the actual height of your header */
+  overflow-y: auto;
+  /* rest of your sidebar styling */
+}
+
+/* The main content should have a top padding that equals the height of the header */
+.content {
+  padding-top: 60px; /* Adjust this value based on the actual height of your header */
+  overflow-y: auto;
+  height: 100vh;
+  margin-left: 250px; /* Adjust this value based on the actual width of your sidebar */
+  /* rest of your content styling */
+}
+
+/* The App component should allow for the fixed header */
+.App {
+  padding-top: 60px; /* Same height as the header */
+}
+
+/* Add your media queries and other styles as needed */

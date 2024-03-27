@@ -1,0 +1,58 @@
+/* Header.css */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+  }
+  
+  .header-logo img {
+    height: 50px; /* Adjust as needed */
+    cursor: pointer;
+  }
+  
+  .header-profile {
+    position: relative;
+  }
+  
+  .profile-icon {
+    height: 40px; /* Adjust as needed */
+    cursor: pointer;
+  }
+  
+  .profile-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: #1f1e1e;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+  }
+  
+  .profile-dropdown a,
+  .profile-dropdown button {
+    display: block;
+    padding: 0.5rem;
+    color: #333;
+    text-decoration: none;
+    border-bottom: 1px solid #eee;
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+  }
+  
+  .profile-dropdown a:hover,
+  .profile-dropdown button:hover {
+    background-color: #f6f6f6;
+  }
+  
+  .profile-dropdown button {
+    cursor: pointer;
+  }
+  

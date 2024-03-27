@@ -1,0 +1,42 @@
+/* Education.css */
+.education-container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+  }
+  
+  .education-entry {
+    margin-bottom: 20px;
+    background: #f7f7f7;
+    padding: 15px;
+    border-radius: 5px;
+  }
+  
+  .education-entry input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .education-entry button {
+    padding: 10px;
+    background: red;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  button {
+    display: block;
+    padding: 10px;
+    margin-top: 10px;
+    background: #5c90d2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
