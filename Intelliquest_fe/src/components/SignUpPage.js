@@ -61,6 +61,7 @@ function SignUpPage() {
 
   return (
     <div className="signup-container">
+      <div className="signup-slogan">Ready to dive in? Sign in with your details.</div>
       <form onSubmit={handleSignUp} className="signup-form">
         <input
           type="email"
@@ -86,7 +87,7 @@ function SignUpPage() {
       </form>
       <GoogleLogin
         clientId="454933535483-apt2pd791htjnfdvdmt1mui3psskai96.apps.googleusercontent.com"
-        buttonText="Sign Up with Google"
+        buttonText="SKLASMKSANKSAKJNASKKS"
         onSuccess={responseGoogle}
         onFailure={responseGoogle}
         cookiePolicy={'single_host_origin'}
@@ -97,3 +98,5 @@ function SignUpPage() {
 }
 
 export default SignUpPage;
+
+// This one to keep
