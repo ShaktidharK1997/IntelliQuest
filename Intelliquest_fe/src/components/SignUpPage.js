@@ -86,7 +86,7 @@ function SignUpPage() {
         <button type="submit" className="signup-button">Sign Up</button>
       </form>
       <GoogleLogin
-        clientId="454933535483-apt2pd791htjnfdvdmt1mui3psskai96.apps.googleusercontent.com"
+        clientId="Testing"
         buttonText="SKLASMKSANKSAKJNASKKS"
         onSuccess={responseGoogle}
         onFailure={responseGoogle}
