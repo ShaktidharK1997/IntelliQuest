@@ -54,10 +54,7 @@ function SignUpPage() {
     }
   };
 
-  const responseGoogle = (response) => {
-    console.log(response);
-    // Implement Google sign-up/login logic here
-  };
+  
 
   return (
     <div className="signup-container">
