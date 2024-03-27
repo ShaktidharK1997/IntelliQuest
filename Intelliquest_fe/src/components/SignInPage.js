@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+
+
 import './SignInPage.css'; // Make sure to import the CSS file
 
 function SignInPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { signIn } = useAuth();
   let navigate = useNavigate();
 
   const handleSignIn = async (e) => {
@@ -22,7 +26,8 @@ function SignInPage() {
         const data = await response.json();
         console.log('Sign in successful', data);
         localStorage.setItem('token', data.token); // Assuming the response includes a token
-        navigate('/dashboard'); // Redirect to the dashboard or appropriate page
+        signIn({ id: email, email: email });
+        navigate('/'); // Redirect to the dashboard or appropriate page
       } else {
         console.error('Failed to sign in');
         // Handle errors, e.g., show a message to the user
