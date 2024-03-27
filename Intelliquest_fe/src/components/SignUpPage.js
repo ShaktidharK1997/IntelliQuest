@@ -61,7 +61,7 @@ function SignUpPage() {
 
   return (
     <div className="signup-container">
-      <div className="signup-slogan">Ready to dive in? Sign in with your details.</div>
+      <div className="signup-slogan">Ready this is a conflict to dive in? Sign in with your details.</div>
       <form onSubmit={handleSignUp} className="signup-form">
         <input
           type="email"
