@@ -4,13 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import Logo from '../logo.svg';
 import CenterLogo from '../center_logo.svg';
 import { useAuth } from '../contexts/AuthContext';
+import { Link } from 'react-router-dom';
+import { useSearchResults } from '..//SearchResultsContext'; // Adjust the path as necessary
 
 
 
 function SearchPage() {
   const { currentUser, signOut } = useAuth();
-  const [query, setQuery] = useState('');
-  const [results, setResults] = useState([]);
+  const { query, setQuery, results, setResults } = useSearchResults();
   const [expandedAbstract, setExpandedAbstract] = useState(null); 
   const [recentSearches, setRecentSearches] = useState([]); // Added state for recent searches
 
@@ -115,7 +116,12 @@ function SearchPage() {
           {results.length > 0 ? (
             results.map((paper, index) => (
               <div key={index} className="paper">
-                <h4>{paper.title}</h4>
+                <h4>
+                <Link to={`/PaperDetail?paperid=${paper.paperID}`} style={{ color: 'blue', textDecoration: 'none' }}>
+                {paper.title}
+                </Link>
+
+                </h4>
                 {renderAbstract(paper, index)}
                 <p>Authors: {paper.authors.join(', ')}</p>
                 <p>Year : {paper.year}</p>

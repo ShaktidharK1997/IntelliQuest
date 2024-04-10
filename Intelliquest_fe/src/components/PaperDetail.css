@@ -1,0 +1,128 @@
+/* PaperDetail.css */
+:root {
+  --primary-color: #007bff;
+  --border-color: #ccc;
+  --border-radius: 5px;
+  --background-light: #f9f9f9;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --text-color: #333; /* Generalized text color variable */
+  --text-color-light: #666; /* Lighter text color for less emphasis */
+  --text-color-white: #fff;
+  --input-border-color-focus: rgba(204, 204, 204, 0.75);
+  --button-background-color-hover: #0056b3;
+}
+
+.paper-detail-container {
+  font-family: 'Arial', sans-serif;
+  background-color: var(--background-light);
+  color: var(--text-color);
+  padding: 20px;
+  margin: auto;
+  max-width: 800px; /* Adjust based on your content width preference */
+  box-shadow: var(--shadow-color) 0 4px 8px;
+  border-radius: var(--border-radius);
+}
+
+.paper-detail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.paper-detail h2 {
+  color: var(--text-color);
+  font-size: 24px; /* Adjust the font size as needed */
+}
+
+.paper-detail p {
+  color: var(--text-color-light);
+  font-size: 16px; /* Adjust the font size as needed */
+  margin: 10px 0;
+}
+
+.paper-detail p strong {
+  color: var(--text-color);
+}
+
+.paper-detail a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.paper-detail a:hover,
+.paper-detail a:focus {
+  color: var(--button-background-color-hover);
+}
+
+/* Adjustments for smaller screens */
+@media (max-width: 600px) {
+  .paper-detail-container {
+    margin: 20px;
+    max-width: 100%;
+  }
+}
+
+
+.paper-detail-buttons {
+  padding: 10px 15px;
+  font-size: 17px;
+  background-color: var(--primary-color);
+  color: var(--text-color-white);
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.paper-detail-buttons:hover,
+.paper-detail-buttons:focus {
+  background-color: var(--button-background-color-hover);
+  outline: none;
+}
+
+.paper-detail-buttons:focus {
+  border-color: var(--input-border-color-focus);
+  outline: none;
+}
+
+.recommended-papers-container {
+  margin-top: 30px;
+  padding: 20px;
+  background-color: var(--background-light);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-color) 0px 2px 4px;
+}
+
+.recommended-papers-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+}
+
+.recommended-paper {
+  width: 100%;
+  padding: 10px 15px;
+  margin: 10px 0;
+  background-color: var(--text-color-white);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-color) 0px 1px 3px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.recommended-paper:hover,
+.recommended-paper:focus {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-color) 0px 4px 6px;
+  cursor: pointer;
+}
+
+.recommended-paper p {
+  margin: 0; /* Resetting default paragraph margins for alignment */
+  color: var(--primary-color); /* Make title color stand out */
+  font-weight: bold; /* Optional: makes the paper titles bolder */
+}
