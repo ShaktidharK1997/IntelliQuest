@@ -53,6 +53,12 @@ function SearchPage() {
     setYearTo('');
   }
 
+  const clearFilters = () => {
+    setYearFrom('');
+    setYearTo('');
+    setAuthorName('');
+  };
+
   const toggleAbstract = (index) => {
     setExpandedAbstract(expandedAbstract === index ? null : index);
   };
@@ -105,28 +111,38 @@ function SearchPage() {
         </div>
         {showAdvancedSearch && (
           <div className="advanced-search-options">
-            <input
-              className='year-input'
-              type="number"
-              value={yearFrom}
-              onChange={(e) => setYearFrom(e.target.value)}
-              placeholder="Year from..."
-            />
-            <input
-              className='year-input'
-              type="number"
-              value={yearTo}
-              onChange={(e) => setYearTo(e.target.value)}
-              placeholder="Year to..."
-            />
+            <div className="year-range-inputs">
+                <input
+                    className='year-input'
+                    type="number"
+                    value={yearFrom}
+                    onChange={(e) => setYearFrom(e.target.value)}
+                    placeholder="Year from..."
+                />
+                <input
+                    className='year-input'
+                    type="number"
+                    value={yearTo}
+                    onChange={(e) => setYearTo(e.target.value)}
+                    placeholder="Year to..."
+                />
+            </div>
             <input
             className='author-input'
             type="text"
+            value={authorName}
             onChange={(e) => setAuthorName(e.target.value)}
             placeholder="Author's Name"
             />
           </div>
         )}
+
+        <div className="filter-actions">
+            {showAdvancedSearch && (
+              <span className="clear-filters" onClick={clearFilters}>Clear filters</span>
+            )}
+        </div>
+        
         
         <div className="results-container"> 
           {results.length > 0 ? (
