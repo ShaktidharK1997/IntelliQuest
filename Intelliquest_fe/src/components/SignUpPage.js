@@ -92,6 +92,7 @@ function SignUpPage() {
         cookiePolicy={'single_host_origin'}
         className="google-login-button"
       />
+      <button onClick={() => navigate('/signin')} className="signup-back-button">Back to Login</button>
     </div>
   );
 }
