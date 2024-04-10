@@ -11,7 +11,10 @@ function SearchPage() {
   const { currentUser, signOut } = useAuth();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
-  const [expandedAbstract, setExpandedAbstract] = useState(null); 
+  const [expandedAbstract, setExpandedAbstract] = useState(null);
+  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
+  const [yearFrom, setYearFrom] = useState('');
+  const [yearTo, setYearTo] = useState('');
 
   // Link to signin page
   let navigate = useNavigate();
@@ -28,6 +31,13 @@ function SearchPage() {
       const data = await response.json();
       setResults(data.results);
       console.log(data.results);
+      const filteredResults = data.results.filter((paper) => {
+        const year = parseInt(paper.year);
+        const from = yearFrom ? parseInt(yearFrom) : -Infinity;
+        const to = yearTo ? parseInt(yearTo) : Infinity;
+        return year >= from && year <= to;
+      });
+      setResults(filteredResults);
     } catch (error) {
       console.error("Failed to fetch data:", error);
     }
@@ -36,6 +46,9 @@ function SearchPage() {
   function resetSearch() {
     setQuery(''); // Resets the query string
     setResults([]); // Resets the search results
+    setShowAdvancedSearch(false);
+    setYearFrom('');
+    setYearTo('');
   }
 
   const toggleAbstract = (index) => {
@@ -82,7 +95,30 @@ function SearchPage() {
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search papers..."
         />
-        <button className='search-button' onClick={handleSearch}>Search</button>
+        <div className="buttons-container">
+          <button className='search-button' onClick={handleSearch}>Search</button>
+          <button className='advanced-search-button' onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}>
+            Advanced
+          </button>
+        </div>
+        {showAdvancedSearch && (
+          <div className="advanced-search-options">
+            <input
+              className='year-input'
+              type="number"
+              value={yearFrom}
+              onChange={(e) => setYearFrom(e.target.value)}
+              placeholder="Year from..."
+            />
+            <input
+              className='year-input'
+              type="number"
+              value={yearTo}
+              onChange={(e) => setYearTo(e.target.value)}
+              placeholder="Year to..."
+            />
+          </div>
+        )}
         
         <div className="results-container"> 
           {results.length > 0 ? (

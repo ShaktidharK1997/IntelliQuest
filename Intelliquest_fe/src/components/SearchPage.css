@@ -154,4 +154,59 @@ body {
         margin: 20px 0;
         justify-content: center;
     }
+    .buttons-container,
+    
+    .advanced-search-options {
+    flex-direction: column;
+    width: 100%;
+    }
+
+    .year-input {
+        width: 80%; /* Adjust for smaller screens */
+      }
 }
+
+.buttons-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* Adjust the space between buttons */
+  }
+
+  .advanced-search-button {
+    padding: 8px 12px; /* Slightly smaller than the search button for distinction */
+    font-size: 16px; /* Adjusted for visual hierarchy */
+    background-color: var(--button-background-color-hover); /* Different color for differentiation */
+    color: var(--text-color-white);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .advanced-search-button:hover {
+    background-color: #004a8d; /* A darker shade for the hover state */
+  }
+
+  .advanced-search-options {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* Space between inputs */
+    margin-top: 20px;
+  }
+  
+  .year-input {
+    /* Adjusting the name to match your JSX if you use 'year-input' as the class for your inputs */
+    padding: 10px;
+    font-size: 17px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    width: 90%; /* Adjust based on your layout */
+    max-width: 300px; /* Ensures consistency with other input elements */
+  }
+  
+  /* If the .filter-results-button class is still relevant, adjust accordingly */
+  .filter-results-button {
+    margin-top: 20px;
+    background-color: var(--primary-color); /* Ensure it matches your design intent */
+  }
+
