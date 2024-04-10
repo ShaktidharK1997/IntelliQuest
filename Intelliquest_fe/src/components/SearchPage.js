@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './SearchPage.css';
 import { useNavigate } from 'react-router-dom';
 import Logo from '../logo.svg';
@@ -12,12 +12,22 @@ function SearchPage() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [expandedAbstract, setExpandedAbstract] = useState(null); 
+  const [recentSearches, setRecentSearches] = useState([]); // Added state for recent searches
 
   // Link to signin page
   let navigate = useNavigate();
   const handleSignInClick = () => {
     navigate('/signin'); // Navigate to the sign-in page
   };
+
+  useEffect(() => {
+    if (currentUser) {
+      const savedSearches = JSON.parse(localStorage.getItem(`recentSearches_${currentUser.id}`));
+      if (savedSearches) {
+        setRecentSearches(savedSearches);
+      }
+    }
+  }, [currentUser]);
 
   const handleSearch = async () => {
     // Replace with your Django API endpoint
@@ -28,6 +38,14 @@ function SearchPage() {
       const data = await response.json();
       setResults(data.results);
       console.log(data.results);
+      // Update recent searches, ensuring no duplicates and limiting to 5 items
+      setRecentSearches(prevSearches => {
+        const updatedSearches = [query, ...prevSearches.filter(q => q !== query)].slice(0, 5);
+        if (currentUser) {
+          localStorage.setItem(`recentSearches_${currentUser.id}`, JSON.stringify(updatedSearches));
+        }
+        return updatedSearches;
+      });
     } catch (error) {
       console.error("Failed to fetch data:", error);
     }
@@ -83,6 +101,15 @@ function SearchPage() {
           placeholder="Search papers..."
         />
         <button className='search-button' onClick={handleSearch}>Search</button>
+        
+        <div className="recent-searches"> {/* Display recent searches */}
+        <h3>Recent Searches:</h3>
+          {recentSearches.map((search, index) => (
+            <button key={index} onClick={() => setQuery(search) || handleSearch()}>
+              {search}
+            </button>
+          ))}
+        </div>
         
         <div className="results-container"> 
           {results.length > 0 ? (
