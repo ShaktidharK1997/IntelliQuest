@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './SearchPage.css';
 import { useNavigate } from 'react-router-dom';
 import Logo from '../logo.svg';
@@ -20,6 +20,15 @@ function SearchPage() {
     navigate('/signin'); // Navigate to the sign-in page
   };
 
+  useEffect(() => {
+    if (currentUser) {
+      const savedSearches = JSON.parse(localStorage.getItem(`recentSearches_${currentUser.id}`));
+      if (savedSearches) {
+        setRecentSearches(savedSearches);
+      }
+    }
+  }, [currentUser]);
+
   const handleSearch = async () => {
     // Replace with your Django API endpoint
     const apiUrl = `http://127.0.0.1:8000/IntelliQuest_v1/search/?query=${query}`;
@@ -32,6 +41,9 @@ function SearchPage() {
       // Update recent searches, ensuring no duplicates and limiting to 5 items
       setRecentSearches(prevSearches => {
         const updatedSearches = [query, ...prevSearches.filter(q => q !== query)].slice(0, 5);
+        if (currentUser) {
+          localStorage.setItem(`recentSearches_${currentUser.id}`, JSON.stringify(updatedSearches));
+        }
         return updatedSearches;
       });
     } catch (error) {
