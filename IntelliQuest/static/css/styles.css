@@ -1,0 +1,87 @@
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    font-family: Arial, sans-serif;
+}
+
+/* Header styles */
+header {
+    display: flex;
+    position: relative;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background: #ffffff; /* You can choose your color or leave it transparent */
+}
+
+.logo {
+    font-size: 24px;
+    text-decoration: none;
+    color: #000;
+}
+
+.header-right {
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin-right: 20px; /* Adjust as needed */
+    margin-top: 20px; /* Adjust as needed */
+    display: flex;
+}
+
+.header-right button {
+    text-decoration: none;
+    margin-right: 15px;
+    padding: 5px 10px;
+    background: none;
+    border: 1px solid #000; /* Add a border or customize as needed */
+    cursor: pointer;
+}
+
+/* Main content styles for centering */
+main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+/* Styling for search container and children */
+.search-container {
+    margin: 0;
+}
+
+.search-container h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+.search-container form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.search-container input[type="text"] {
+    padding: 10px;
+    font-size: 17px;
+    border: 1px solid #ddd;
+    margin-right: 10px;
+    width: 300px; /* Adjust as needed */
+}
+
+.search-container button {
+    padding: 10px 15px;
+    font-size: 17px;
+    color: white;
+    background-color: #1a73e8; /* Adjust the background color as needed */
+    border: none;
+    cursor: pointer;
+}

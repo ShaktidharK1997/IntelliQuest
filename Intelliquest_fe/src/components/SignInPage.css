@@ -1,0 +1,69 @@
+.signin-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: var(--background-light);
+}
+
+.signin-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+    box-shadow: var(--shadow-color) 0 4px 8px;
+    border-radius: var(--border-radius);
+    background-color: var(--text-color-white);
+}
+
+.signin-form input[type="email"],
+.signin-form input[type="password"] {
+    width: 100%;
+    max-width: 300px;
+    padding: 10px;
+    margin: 0;
+    font-size: 17px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    outline: none;
+}
+
+.signin-form .signin-button {
+    width: 100%;
+    max-width: 300px;
+    padding: 10px 15px;
+    font-size: 17px;
+    background-color: var(--primary-color);
+    color: var(--text-color-white);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.signin-form .signin-button:hover,
+.signin-form .signin-button:focus {
+    background-color: var(--button-background-color-hover);
+    outline: none;
+}
+
+.signin-form .link-button {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+/* Maintain consistency with the responsiveness */
+@media (max-width: 600px) {
+    .signin-container {
+        padding: 20px;
+    }
+
+    .signin-form {
+        width: 100%;
+        max-width: none;
+    }
+}
