@@ -154,7 +154,105 @@ body {
         margin: 20px 0;
         justify-content: center;
     }
+    .buttons-container,
+    
+    .advanced-search-options {
+    flex-direction: column;
+    width: 100%;
+    }
+
+    .year-input {
+        width: 80%; /* Adjust for smaller screens */
+      }
 }
+
+.buttons-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* Adjust the space between buttons */
+    margin-bottom: 20px;
+  }
+
+  .advanced-search-button {
+    padding: 8px 12px; /* Slightly smaller than the search button for distinction */
+    font-size: 16px; /* Adjusted for visual hierarchy */
+    background-color: var(--button-background-color-hover); /* Different color for differentiation */
+    color: var(--text-color-white);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .advanced-search-button:hover {
+    background-color: #004a8d; /* A darker shade for the hover state */
+  }
+
+
+  .advanced-search-options {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px; /* Space between each input */
+    width: 50%; /* Takes full width to center the inputs */
+  }
+
+  .year-range-inputs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    width: 65%;
+  }
+
+  .year-input {
+    padding: 10px;
+    font-size: 17px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    width: calc(25% - 10px); /* Reduces width to 25% of the parent's width and adjusts for gap */
+  }
+  
+  .author-input {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    font-size: 17px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    width: 50%;
+    max-width: 100px;
+    margin-top: 10px; /* Adds space between the year inputs and the author input */
+  }
+
+  .year-input:last-child {
+    margin-right: 0; /* Removes margin from the last year input and the author input */
+    }
+  
+  /* If the .filter-results-button class is still relevant, adjust accordingly */
+  .filter-results-button {
+    margin-top: 10px;
+    background-color: var(--primary-color); /* Ensure it matches your design intent */
+  }
+
+  .filter-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* Adjust based on your layout */
+    margin-top: 10px;
+  }
+  
+  .clear-filters {
+    cursor: pointer;
+    text-decoration: underline;
+    color: var(--primary-color); /* Use the primary color for consistency */
+    padding: 8px 12px; /* Adjust padding as needed for alignment */
+    font-size: 16px; /* Optional: Adjust to match design */
+  }
+  
+  .clear-filters:hover {
+    color: #0056b3; /* Darker shade for hover effect, adjust as needed */
+  }
+
 /* Additional CSS for recent searches */
 .recent-searches button {
   margin: 5px;
@@ -163,3 +261,4 @@ body {
   border-radius: var(--border-radius);
   cursor: pointer;
 }
+

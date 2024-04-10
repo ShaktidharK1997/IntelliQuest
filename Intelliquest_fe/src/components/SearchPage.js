@@ -11,9 +11,14 @@ import { useSearchResults } from '..//SearchResultsContext'; // Adjust the path 
 
 function SearchPage() {
   const { currentUser, signOut } = useAuth();
+  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
+  const [yearFrom, setYearFrom] = useState('');
+  const [yearTo, setYearTo] = useState('');
+  const [authorName, setAuthorName] = useState('');
   const { query, setQuery, results, setResults } = useSearchResults();
   const [expandedAbstract, setExpandedAbstract] = useState(null); 
   const [recentSearches, setRecentSearches] = useState([]); // Added state for recent searches
+
 
   // Link to signin page
   let navigate = useNavigate();
@@ -39,6 +44,16 @@ function SearchPage() {
       const data = await response.json();
       setResults(data.results);
       console.log(data.results);
+
+      const filteredResults = data.results.filter((paper) => {
+        const year = parseInt(paper.year);
+        const from = yearFrom ? parseInt(yearFrom) : -Infinity;
+        const to = yearTo ? parseInt(yearTo) : Infinity;
+        const authorMatch = authorName ? paper.authors.some(author => author.toLowerCase().includes(authorName.toLowerCase())) : true;
+        return year >= from && year <= to && authorMatch;
+      });
+      setResults(filteredResults);
+      
       // Update recent searches, ensuring no duplicates and limiting to 5 items
       setRecentSearches(prevSearches => {
         const updatedSearches = [query, ...prevSearches.filter(q => q !== query)].slice(0, 5);
@@ -47,6 +62,7 @@ function SearchPage() {
         }
         return updatedSearches;
       });
+
     } catch (error) {
       console.error("Failed to fetch data:", error);
     }
@@ -55,7 +71,16 @@ function SearchPage() {
   function resetSearch() {
     setQuery(''); // Resets the query string
     setResults([]); // Resets the search results
+    setShowAdvancedSearch(false);
+    setYearFrom('');
+    setYearTo('');
   }
+
+  const clearFilters = () => {
+    setYearFrom('');
+    setYearTo('');
+    setAuthorName('');
+  };
 
   const toggleAbstract = (index) => {
     setExpandedAbstract(expandedAbstract === index ? null : index);
@@ -101,7 +126,46 @@ function SearchPage() {
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search papers..."
         />
-        <button className='search-button' onClick={handleSearch}>Search</button>
+        <div className="buttons-container">
+          <button className='search-button' onClick={handleSearch}>Search</button>
+          <button className='advanced-search-button' onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}>
+            Advanced
+          </button>
+        </div>
+        {showAdvancedSearch && (
+          <div className="advanced-search-options">
+            <div className="year-range-inputs">
+                <input
+                    className='year-input'
+                    type="number"
+                    value={yearFrom}
+                    onChange={(e) => setYearFrom(e.target.value)}
+                    placeholder="Year from..."
+                />
+                <input
+                    className='year-input'
+                    type="number"
+                    value={yearTo}
+                    onChange={(e) => setYearTo(e.target.value)}
+                    placeholder="Year to..."
+                />
+            </div>
+            <input
+            className='author-input'
+            type="text"
+            value={authorName}
+            onChange={(e) => setAuthorName(e.target.value)}
+            placeholder="Author's Name"
+            />
+          </div>
+        )}
+
+        <div className="filter-actions">
+            {showAdvancedSearch && (
+              <span className="clear-filters" onClick={clearFilters}>Clear filters</span>
+            )}
+        </div>
+        
         
         <div className="recent-searches"> {/* Display recent searches */}
         <h3>Recent Searches:</h3>
