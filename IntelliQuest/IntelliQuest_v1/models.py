@@ -11,6 +11,14 @@ class Paper(models.Model):
     title = models.CharField(max_length=512)
     abstract = models.TextField()
     authors = models.ManyToManyField(Author, through='PaperAuthors', related_name='papers')
+    papersource =  models.BigIntegerField(null= True)
+
+class PaperDetail(models.Model):
+    paper = models.OneToOneField(Paper, on_delete=models.CASCADE, related_name='detail')
+    citationcount = models.IntegerField(null = False)
+    pubvenue = models.CharField(max_length = 256)
+    downloadlink = models.URLField(max_length = 200, null = True)
+
 
 class PaperAuthors(models.Model):
     author = models.ForeignKey(Author, on_delete=models.CASCADE, to_field='authorID')

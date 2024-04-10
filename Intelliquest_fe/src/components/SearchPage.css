@@ -253,3 +253,12 @@ body {
     color: #0056b3; /* Darker shade for hover effect, adjust as needed */
   }
 
+/* Additional CSS for recent searches */
+.recent-searches button {
+  margin: 5px;
+  background-color: var(--background-light);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+}
+
