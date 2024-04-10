@@ -15,6 +15,7 @@ function SearchPage() {
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
   const [yearFrom, setYearFrom] = useState('');
   const [yearTo, setYearTo] = useState('');
+  const [authorName, setAuthorName] = useState('');
 
   // Link to signin page
   let navigate = useNavigate();
@@ -35,7 +36,8 @@ function SearchPage() {
         const year = parseInt(paper.year);
         const from = yearFrom ? parseInt(yearFrom) : -Infinity;
         const to = yearTo ? parseInt(yearTo) : Infinity;
-        return year >= from && year <= to;
+        const authorMatch = authorName ? paper.authors.some(author => author.toLowerCase().includes(authorName.toLowerCase())) : true;
+        return year >= from && year <= to && authorMatch;
       });
       setResults(filteredResults);
     } catch (error) {
@@ -116,6 +118,12 @@ function SearchPage() {
               value={yearTo}
               onChange={(e) => setYearTo(e.target.value)}
               placeholder="Year to..."
+            />
+            <input
+            className='author-input'
+            type="text"
+            onChange={(e) => setAuthorName(e.target.value)}
+            placeholder="Author's Name"
             />
           </div>
         )}

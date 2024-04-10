@@ -210,3 +210,12 @@ body {
     background-color: var(--primary-color); /* Ensure it matches your design intent */
   }
 
+  .author-input {
+    padding: 10px;
+    font-size: 17px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    width: 90%; /* Adjust based on your layout */
+    max-width: 300px; /* Ensures consistency with the search input */
+  }
+
