@@ -12,6 +12,7 @@ function SearchPage() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [expandedAbstract, setExpandedAbstract] = useState(null); 
+  const [recentSearches, setRecentSearches] = useState([]); // Added state for recent searches
 
   // Link to signin page
   let navigate = useNavigate();
@@ -28,6 +29,11 @@ function SearchPage() {
       const data = await response.json();
       setResults(data.results);
       console.log(data.results);
+      // Update recent searches, ensuring no duplicates and limiting to 5 items
+      setRecentSearches(prevSearches => {
+        const updatedSearches = [query, ...prevSearches.filter(q => q !== query)].slice(0, 5);
+        return updatedSearches;
+      });
     } catch (error) {
       console.error("Failed to fetch data:", error);
     }
@@ -83,6 +89,15 @@ function SearchPage() {
           placeholder="Search papers..."
         />
         <button className='search-button' onClick={handleSearch}>Search</button>
+        
+        <div className="recent-searches"> {/* Display recent searches */}
+        <h3>Recent Searches:</h3>
+          {recentSearches.map((search, index) => (
+            <button key={index} onClick={() => setQuery(search) || handleSearch()}>
+              {search}
+            </button>
+          ))}
+        </div>
         
         <div className="results-container"> 
           {results.length > 0 ? (
