@@ -1,26 +1,16 @@
 import React from 'react';
-import { createRoot } from 'react-dom/client';
-import App from './App';
+import ReactDOM from 'react-dom/client';
 import { AuthProvider } from './contexts/AuthContext';
-import { BrowserRouter } from 'react-router-dom';
 import './index.css';
+import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-// Get the element where you want to mount your React application
-const container = document.getElementById('root');
 
-// Create a root
-const root = createRoot(container);
-
-// Render your app component into the root
+const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <AuthProvider>
-        <App />
-      </AuthProvider>
-    </BrowserRouter>
-  </React.StrictMode>
+  <AuthProvider>
+    <App />
+  </AuthProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function
