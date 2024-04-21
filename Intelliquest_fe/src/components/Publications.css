@@ -1,0 +1,73 @@
+/* Publications.css */
+.publication-container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);  /* Soft shadow for depth */
+}
+
+.publication-entry {
+    margin-bottom: 20px;
+    background: #aca2a2;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* Lighter shadow for each entry */
+}
+
+.publication-entry input,
+.publication-entry textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px; /* Slightly larger font for better readability */
+}
+
+.publication-entry button {
+    margin-right: 10px; /* Space between buttons */
+    padding: 8px 16px; /* Better padding for usability */
+    margin-top: 10px; /* Space above the button */
+    background: #5c90d2; /* Uniform color for initial state */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s; /* Smooth transition for hover effects */
+}
+
+.publication-entry button:hover {
+    background-color: #4072a0; /* Darker blue on hover */
+}
+
+/* Specific styles for Save and Cancel buttons to distinguish them */
+.publication-entry .save-btn {
+    background-color: #4CAF50; /* Green for Save */
+}
+
+.publication-entry .save-btn:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+
+.publication-entry .cancel-btn {
+    background-color: #f44336; /* Red for Cancel */
+}
+
+.publication-entry .cancel-btn:hover {
+    background-color: #d32f2f; /* Darker red on hover */
+}
+
+button.add-publication-btn {
+    display: block;
+    width: auto; /* Auto width based on content */
+    padding: 10px 20px; /* Sufficient padding around text */
+    margin: 20px auto 0; /* Margin for top auto centering */
+    background-color: #5c90d2; /* Blue background */
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button.add-publication-btn:hover {
+    background-color: #4072a0; /* Darker blue on hover */
+}

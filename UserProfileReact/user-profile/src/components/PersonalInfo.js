@@ -3,7 +3,7 @@ import './PersonalInfo.css'; // Ensure you have created this CSS file.
 
 function PersonalInfo() {
   // State for the username to simulate fetching data for the logged-in user
-  const [username] = useState('temp_user');
+  const [username] = useState('temp_user'); // Replace temp_user with logged in user
   
   // State to handle the profile picture preview
   const [profilePic, setProfilePic] = useState(null);
@@ -23,7 +23,7 @@ function PersonalInfo() {
     const fetchData = async () => {
       if (username) {
         try {
-          const response = await fetch(`http://localhost:8000/api/personalinfo/${username}/`);
+          const response = await fetch(`http://localhost:8000/myprofile/${username}/`);
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
@@ -62,7 +62,7 @@ function PersonalInfo() {
       formData.append('profile_picture', fileField.files[0]);
 
     try {
-          const response = await fetch(`http://localhost:8000/api/upload_profile_picture/${username}/`, {
+          const response = await fetch(`http://localhost:8000/myprofile/upload_profile_picture/${username}/`, {
             method: 'PUT', // or 'PATCH' if your backend supports it for partial updates
             body: formData, // FormData object, don't set Content-Type header
           });

@@ -1,0 +1,32 @@
+<!-- home.html -->
+{% load static %}  
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Add this line -->
+    <title>IntelliQuest</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <header>
+        <a href="{% url 'home' %}" class="logo">IntelliQuest</a>
+        <div class="header-right">
+            <button onclick="location.href='#signin';">Sign In</button>
+            <button onclick="location.href='#settings';">Settings</button>
+        </div>
+    </header>
+    
+    <main>
+        <div class="search-container">
+            <h1>IntelliQuest</h1>
+            <form action="{% url 'search_results' %}" method="GET">
+                <input type="text" name="query" placeholder="Enter search terms">
+                <button type="submit">Search</button>
+            </form>
+        </div>
+    </main>
+
+</body>
+</html>

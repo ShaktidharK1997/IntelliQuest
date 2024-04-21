@@ -1,0 +1,77 @@
+/* Education.css */
+.education-container {
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Soft shadow for depth */
+}
+
+.education-entry {
+  margin-bottom: 20px;
+  background: #f7f7f7;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* Lighter shadow for each entry */
+}
+
+.education-entry input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px; /* Slightly larger font for better readability */
+}
+
+.education-entry button {
+  margin-right: 10px; /* Space between buttons */
+  padding: 8px 16px; /* Better padding for usability */
+  margin-top: 10px; /* Space above the button */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s; /* Smooth transition for hover effects */
+}
+
+/* Styles for specific button functionalities */
+.education-entry .save-btn {
+  background-color: #4CAF50; /* Green for Save */
+}
+
+.education-entry .save-btn:hover {
+  background-color: #45a049; /* Darker green on hover */
+}
+
+.education-entry .cancel-btn {
+  background-color: #f44336; /* Red for Cancel */
+}
+
+.education-entry .cancel-btn:hover {
+  background-color: #d32f2f; /* Darker red on hover */
+}
+
+.education-entry .edit-btn, /* Additional class for edit button */
+.education-entry .remove-btn { /* Additional class for remove button */
+  background-color: red; /* Keep red for removal and editing */
+}
+
+.education-entry .edit-btn:hover,
+.education-entry .remove-btn:hover {
+  background-color: #cc0000; /* Slightly darker red on hover */
+}
+
+button.add-education-btn {
+  display: block;
+  width: auto; /* Auto width based on content */
+  padding: 10px 20px; /* Sufficient padding around text */
+  margin: 20px auto 0; /* Margin for top auto centering */
+  background-color: #5c90d2; /* Blue background for add button */
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button.add-education-btn:hover {
+  background-color: #4072a0; /* Darker blue on hover */
+}

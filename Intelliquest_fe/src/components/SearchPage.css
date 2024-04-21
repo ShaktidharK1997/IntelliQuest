@@ -1,0 +1,265 @@
+:root {
+    --primary-color: #007bff;
+    --border-color: #ccc;
+    --border-radius: 5px;
+    --background-light: #f9f9f9;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --text-color: #333; /* Generalized text color variable */
+    --text-color-light: #666; /* Lighter text color for less emphasis */
+    --text-color-white: #fff;
+    --input-border-color-focus: rgba(204, 204, 204, 0.75);
+    --button-background-color-hover: #0056b3;
+}
+
+body {
+    font-family: 'Arial', sans-serif; /* Ensure a consistent font base */
+    background-color: var(--background-light);
+    margin: 0;
+    padding: 0;
+    
+}
+
+.logo, .header-right button {
+    color: var(--text-color);
+    text-decoration: none;
+}
+
+.logo {
+    font-size: 24px;
+}
+
+.logo img {
+    width: 30px; /* Adjust width as needed */
+    padding-top: 20px; /* Increase top padding */
+    padding-left: 20px; /* Increase left padding */
+}
+
+.header-right {
+    position: absolute;
+    right: 20px;
+    top: 60px;
+    display: flex;
+}
+
+.header-right button:first-child {
+    margin-right: 10px; /* Add right margin to only the first button */
+}
+
+.center-logo-container {
+    text-align: center;
+    margin-bottom: 20px; /* Space between the logo, heading, and search input */
+  }
+  
+.center-logo {
+    width: 100px; /* Adjust width as needed */
+    margin: 0 auto; /* Center the logo */
+    display: block;
+  }
+  
+.center-logo-container h1 {
+    margin-top: 10px; /* Space between logo and heading */
+    font-size: 2em; /* Adjust the font size as needed */
+  }
+
+.search-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* This will center the children horizontally */
+    padding: 20px;
+    margin: 0;
+    width: 100%; /* Ensures full width */
+}
+
+.search-container h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+.search-container form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.search-container form,
+.search-container input[type="text"],
+.search-button {
+    width: 100%;
+    max-width: 300px; /* Controls the maximum width */
+}
+
+.search-container input[type="text"] {
+    padding: 10px;
+    font-size: 17px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    margin-bottom: 15px; /* Space between input and button */
+}
+
+.search-button {
+    padding: 10px 15px;
+    font-size: 17px;
+    background-color: var(--primary-color);
+    color: var(--text-color-white);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.search-button:hover,
+.search-button:focus {
+    background-color: var(--button-background-color-hover);
+    outline: none;
+}
+
+.search-input:focus {
+    border-color: var(--input-border-color-focus);
+    outline: none;
+}
+
+.results-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.paper {
+    background-color: var(--text-color-white);
+    box-shadow: var(--shadow-color) 0 4px 8px;
+    border-radius: var(--border-radius);
+    padding: 20px;
+    margin: 10px;
+    width: 100%;
+    max-width: 300px; /* Consistent with form elements */
+    box-sizing: border-box;
+}
+
+.paper h4 {
+    margin-top: 0;
+    color: var(--text-color);
+}
+
+.paper p {
+    color: var(--text-color-light);
+    font-size: 14px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .header-right {
+        position: static; /* Adjust position for smaller screens */
+        margin: 20px 0;
+        justify-content: center;
+    }
+    .buttons-container,
+    
+    .advanced-search-options {
+    flex-direction: column;
+    width: 100%;
+    }
+
+    .year-input {
+        width: 80%; /* Adjust for smaller screens */
+      }
+}
+
+.buttons-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* Adjust the space between buttons */
+    margin-bottom: 20px;
+  }
+
+  .advanced-search-button {
+    padding: 8px 12px; /* Slightly smaller than the search button for distinction */
+    font-size: 16px; /* Adjusted for visual hierarchy */
+    background-color: var(--button-background-color-hover); /* Different color for differentiation */
+    color: var(--text-color-white);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .advanced-search-button:hover {
+    background-color: #004a8d; /* A darker shade for the hover state */
+  }
+
+
+  .advanced-search-options {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px; /* Space between each input */
+    width: 50%; /* Takes full width to center the inputs */
+  }
+
+  .year-range-inputs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    width: 65%;
+  }
+
+  .year-input {
+    padding: 10px;
+    font-size: 17px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    width: calc(25% - 10px); /* Reduces width to 25% of the parent's width and adjusts for gap */
+  }
+  
+  .author-input {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    font-size: 17px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    width: 50%;
+    max-width: 100px;
+    margin-top: 10px; /* Adds space between the year inputs and the author input */
+  }
+
+  .year-input:last-child {
+    margin-right: 0; /* Removes margin from the last year input and the author input */
+    }
+  
+  /* If the .filter-results-button class is still relevant, adjust accordingly */
+  .filter-results-button {
+    margin-top: 10px;
+    background-color: var(--primary-color); /* Ensure it matches your design intent */
+  }
+
+  .filter-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* Adjust based on your layout */
+    margin-top: 10px;
+  }
+  
+  .clear-filters {
+    cursor: pointer;
+    text-decoration: underline;
+    color: var(--primary-color); /* Use the primary color for consistency */
+    padding: 8px 12px; /* Adjust padding as needed for alignment */
+    font-size: 16px; /* Optional: Adjust to match design */
+  }
+  
+  .clear-filters:hover {
+    color: #0056b3; /* Darker shade for hover effect, adjust as needed */
+  }
+
+/* Additional CSS for recent searches */
+.recent-searches button {
+  margin: 5px;
+  background-color: var(--background-light);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+}
+
