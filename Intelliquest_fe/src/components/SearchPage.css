@@ -60,11 +60,19 @@ body {
     font-size: 2em; /* Adjust the font size as needed */
   }
 
+.main-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Aligns children (content and footer) to space between */
+    min-height: 100vh; /* Adjust this value based on your actual header/footer size */
+    margin-top: -headerHeight; /* Adjust this if you have a fixed header */
+  }
 .search-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center; /* This will center the children horizontally */
+    justify-content: space-between; /* This will center the children horizontally */
+    flex: 1;
     padding: 20px;
     margin: 0;
     width: 100%; /* Ensures full width */

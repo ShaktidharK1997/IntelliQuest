@@ -12,16 +12,18 @@ function PaperDetail() {
   const [error, setError] = useState('');
   const [recommendedPapers, setRecommendedPapers] = useState([]);
   const [showRecommendedPapers, setShowRecommendedPapers] = useState(false);
+
   
   const paperId = new URLSearchParams(location.search).get('paperid');
+  const source = new URLSearchParams(location.search).get('source');
 
   useEffect(() => {
     const fetchPaperDetails = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/IntelliQuest_v1/paper/?paperid=${paperId}`);
+        const response = await fetch(`http://127.0.0.1:8000/IntelliQuest_v1/paper/?paperid=${paperId}&source=${source}`);
         const data = await response.json();
-        if (data.length > 0) {
-          setPaper(data[0]);
+        if (data) {
+          setPaper(data);
         } else {
           setError("Paper not found.");
         }
@@ -73,8 +75,8 @@ function PaperDetail() {
   };
 
   const ViewPaper = () => {
-    if(paper && paper.downloadlink) {
-      window.open(paper.downloadlink, "_blank", "noopener noreferrer");
+    if(paper && paper.downloadLink) {
+      window.open(paper.downloadLink, "_blank", "noopener noreferrer");
     }
   };
 
