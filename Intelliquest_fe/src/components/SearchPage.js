@@ -3,6 +3,7 @@ import './SearchPage.css';
 import { useNavigate } from 'react-router-dom';
 import Logo from '../logo.svg';
 import CenterLogo from '../center_logo.svg';
+import icon from '../icon.svg';
 import { useAuth } from '../contexts/AuthContext';
 import { Link } from 'react-router-dom';
 import { useSearchResults } from '..//SearchResultsContext'; // Adjust the path as necessary
@@ -29,6 +30,7 @@ const getRandomTopics = () => {
 };
 
 function SearchPage() {
+  const [showDropdown, setShowDropdown] = useState(false);
   const { currentUser, signOut } = useAuth();
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
   const [yearFrom, setYearFrom] = useState('');
@@ -122,7 +124,7 @@ function SearchPage() {
   };
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  
+  const toggleDropdown = () => setShowDropdown(!showDropdown);
 
   return (
     <>
@@ -134,14 +136,21 @@ function SearchPage() {
       <div className="header-right">
       {currentUser ? (
         <>
-          <span>{`User ID: ${currentUser.id}`}</span>
-          <button onClick={signOut}>Sign Out</button>
+          <button onClick={toggleDropdown} className="user-button">
+            <img src={icon} alt="User Icon" />
+          </button>
+          {showDropdown && (
+            <div className="dropdown">
+              <button onClick={() => console.log('View My Profile')}>View My Profile</button>
+              <button onClick={signOut}>Sign Out</button>
+              <button onClick={() => console.log('Settings')}>Settings</button>
+            </div>
+          )}
         </>
       ) : (
         <button onClick={handleSignInClick}>Sign In</button>
       )}
-        <button onClick={() => window.location='#settings'}>Settings</button>
-      </div>
+    </div>
 
       <div className='search-container'>
         <div className="center-logo-container" onClick={resetSearch} style={{cursor: 'pointer'}}>

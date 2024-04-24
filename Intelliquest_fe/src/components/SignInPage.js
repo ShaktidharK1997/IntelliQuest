@@ -57,6 +57,7 @@ function SignInPage() {
         />
         <p>Do not have an account? <button onClick={() => navigate('/signup')} className="link-button">Register an account.</button></p>
         <button type="submit" className="signin-button">Login</button>
+        <button onClick={() => navigate('/')} className="signup-back-button">Back to Search Page</button>
       </form>
     </div>
   );

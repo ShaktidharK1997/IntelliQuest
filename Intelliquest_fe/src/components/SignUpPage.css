@@ -48,24 +48,26 @@
     outline: none;
 }
 
-/* Additional styles for Google Login button to make it consistent with the form */
-.google-login-button {
+/* Back to Search Page is using this class */
+.signup-back-button {
+    margin-top: 20px; /* Adjust the space as needed */
     width: 100%;
-    max-width: 300px; /* Keep consistent with other form elements */
-    margin-top: 20px; /* Spacing between sign up form and Google login button */
-    font-size: 17px; /* Match font size with form buttons */
-    /* Additional styling can be applied to match the button more closely with your design */
+    max-width: 300px; /* Match the "Sign Up" button width */
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    text-decoration: underline;
+    cursor: pointer;
 }
 
-/* Keep the responsiveness in line with the rest of the application */
-@media (max-width: 600px) {
-    .signup-container {
-        padding: 20px;
-    }
-
-    .signup-container form,
-    .google-login-button {
-        width: 100%;
-        max-width: none;
-    }
+/* Additional styles for Google Login button to make it consistent with the form */
+.google-login-button {
+    margin-top: 20px; /* Adjust the space as needed */
+    width: 100%;
+    max-width: 300px; /* Match the "Sign Up" button width */
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    text-decoration: underline;
+    cursor: pointer;
 }
