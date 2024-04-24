@@ -150,7 +150,9 @@ body {
 /* Responsive adjustments */
 @media (max-width: 600px) {
   .header-right {
-      position: static; /* Adjust position for smaller screens */
+      position: relative;
+      display: inline-block;
+      /* position: static; Adjust position for smaller screens */
       margin: 20px 0;
       justify-content: center;
   }
@@ -260,4 +262,50 @@ background-color: var(--background-light);
 border: 1px solid var(--border-color);
 border-radius: var(--border-radius);
 cursor: pointer;
+}
+
+.dropdown {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  right: 0;
+  top: 100%;
+}
+
+.dropdown button {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+  border: none;
+  background: none;
+  width: 100%;
+  box-sizing: border-box; /* Adds padding and border to the element's total width and height */
+}
+
+.dropdown button:hover {
+  background-color: #f1f1f1;
+}
+
+.user-button img {
+  width: 30px; /* Adjust size as necessary */
+  height: 30px; /* Adjust size as necessary */
+  border-radius: 50%; /* Makes the image round */
+}
+
+.user-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+}
+
+/* CSS to display the dropdown when user clicks on the button */
+.header-right:hover .dropdown {
+  display: block;
 }
