@@ -3,15 +3,34 @@ import './SearchPage.css';
 import { useNavigate } from 'react-router-dom';
 import Logo from '../logo.svg';
 import CenterLogo from '../center_logo.svg';
+import icon from '../icon.svg';
 import { useAuth } from '../contexts/AuthContext';
 import { Link } from 'react-router-dom';
 import { useSearchResults } from '..//SearchResultsContext'; // Adjust the path as necessary
 
 import Pagination from './Pagination';
 
+// Define the topics array
+const topics = [
+  "Artificial Intelligence (AI)", "Machine Learning", "Deep Learning",
+  "Natural Language Processing (NLP)", "Quantum Computing", "Blockchain Technology",
+  "Cybersecurity", "Data Science", "Big Data Analytics", "Internet of Things (IoT)",
+  "Cloud Computing", "Edge Computing", "Computer Graphics", "Virtual Reality (VR)",
+  "Augmented Reality (AR)", "Software Engineering", "Human-Computer Interaction (HCI)",
+  "Computer Vision", "Robotics", "Ethics in Technology", "Game Development",
+  "Networks and Communications", "Database Management", "Algorithm Design",
+  "Cryptography", "Computational Biology", "Health Informatics", "E-commerce Technology",
+  "Environmental Informatics", "Autonomous Vehicles"
+];
 
+// Function to pick five random topics
+const getRandomTopics = () => {
+  const shuffled = [...topics].sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, 5);
+};
 
 function SearchPage() {
+  const [showDropdown, setShowDropdown] = useState(false);
   const { currentUser, signOut } = useAuth();
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
   const [yearFrom, setYearFrom] = useState('');
@@ -25,8 +44,7 @@ function SearchPage() {
   const [showSortingOptions, setShowSortingOptions] = useState(false);
   const [sortByYear, setSortByYear] = useState('');
   const [sortByCitations, setSortByCitations] = useState('');
-
-
+  const [randomTopics, setRandomTopics] = useState([]);
 
   // Link to signin page
   let navigate = useNavigate();
@@ -41,7 +59,8 @@ function SearchPage() {
         setRecentSearches(savedSearches);
       }
     }
-  }, [currentUser]);
+    setRandomTopics(getRandomTopics());
+  }, []); // Changed to an empty array
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -139,7 +158,7 @@ function SearchPage() {
   };
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  
+  const toggleDropdown = () => setShowDropdown(!showDropdown);
 
   return (
     <>
@@ -151,14 +170,21 @@ function SearchPage() {
       <div className="header-right">
       {currentUser ? (
         <>
-          <span>{`User ID: ${currentUser.id}`}</span>
-          <button onClick={signOut}>Sign Out</button>
+          <button onClick={toggleDropdown} className="user-button">
+            <img src={icon} alt="User Icon" />
+          </button>
+          {showDropdown && (
+            <div className="dropdown">
+              <button onClick={() => console.log('View My Profile')}>View My Profile</button>
+              <button onClick={signOut}>Sign Out</button>
+              <button onClick={() => console.log('Settings')}>Settings</button>
+            </div>
+          )}
         </>
       ) : (
         <button onClick={handleSignInClick}>Sign In</button>
       )}
-        <button onClick={() => window.location='#settings'}>Settings</button>
-      </div>
+    </div>
 
       <div className='search-container'>
         <div className="center-logo-container" onClick={resetSearch} style={{cursor: 'pointer'}}>
@@ -253,6 +279,15 @@ function SearchPage() {
           ))}
         </div>
         
+        <div className="recent-searches">
+          <h3>Popular Topics:</h3>
+          {randomTopics.map((topic, index) => (
+            <button key={index} onClick={() => setQuery(topic) || handleSearch()}>
+              {topic}
+            </button>
+          ))}
+        </div>
+
         <div className="results-container">
           {results.length > 0 ? (
             currentResults.map((paper, index) => (
