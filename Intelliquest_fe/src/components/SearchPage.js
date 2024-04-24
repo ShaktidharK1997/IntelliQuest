@@ -22,6 +22,10 @@ function SearchPage() {
   const [recentSearches, setRecentSearches] = useState([]); // Added state for recent searches
   const [currentPage, setCurrentPage] = useState(1);
   const [resultsPerPage] = useState(12); 
+  const [showSortingOptions, setShowSortingOptions] = useState(false);
+  const [sortByYear, setSortByYear] = useState('');
+  const [sortByCitations, setSortByCitations] = useState('');
+
 
 
   // Link to signin page
@@ -38,6 +42,22 @@ function SearchPage() {
       }
     }
   }, [currentUser]);
+
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (!event.target.closest(".sorting-options") && !event.target.closest(".sort-button")) {
+        setShowSortingOptions(false);
+      }
+    };
+  
+    if (showSortingOptions) {
+      document.addEventListener('click', handleOutsideClick);
+    }
+  
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
+    };
+  }, [showSortingOptions]);
 
   const handleSearch = async () => {
     // Replace with your Django API endpoint
@@ -56,6 +76,21 @@ function SearchPage() {
         const authorMatch = authorName ? paper.authors.some(author => author.toLowerCase().includes(authorName.toLowerCase())) : true;
         return year >= from && year <= to && authorMatch;
       });
+
+    // Sorting by year
+    if (sortByYear === 'oldest') {
+      filteredResults.sort((a, b) => parseInt(a.year) - parseInt(b.year));
+    } else if (sortByYear === 'newest') {
+      filteredResults.sort((a, b) => parseInt(b.year) - parseInt(a.year));
+    }
+
+    // Placeholder: Sorting by citations - Uncomment and modify once citation data is available
+    // if (sortByCitations === 'ascending') {
+    //   filteredResults.sort((a, b) => a.citations - b.citations);
+    // } else if (sortByCitations === 'descending') {
+    //   filteredResults.sort((a, b) => b.citations - a.citations);
+    // }
+
       setResults(filteredResults);
       
       // Update recent searches, ensuring no duplicates and limiting to 5 items
@@ -137,6 +172,37 @@ function SearchPage() {
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search papers..."
         />
+
+        <button className='sort-button' onClick={() => setShowSortingOptions(!showSortingOptions)}>Sort</button>
+          {showSortingOptions && (
+                  <div className="sorting-options">
+                      <div>
+                          <p>Sort by Year:</p>
+                          <label>
+                              <input type="radio" name="sortByYear" value="oldest" onChange={() => setSortByYear('oldest')} checked={sortByYear === 'oldest'} />
+                              Oldest to Newest
+                          </label>
+                          <label>
+                              <input type="radio" name="sortByYear" value="newest" onChange={() => setSortByYear('newest')} checked={sortByYear === 'newest'} />
+                              Newest to Oldest
+                          </label>
+                      </div>
+                      <div>
+                          <p>Sort by Citations:</p>
+                          <label>
+                              <input type="radio" name="sortByCitations" value="ascending" onChange={() => setSortByCitations('ascending')} checked={sortByCitations === 'ascending'} />
+                              Ascending
+                          </label>
+                          <label>
+                              <input type="radio" name="sortByCitations" value="descending" onChange={() => setSortByCitations('descending')} checked={sortByCitations === 'descending'} />
+                              Descending
+                          </label>
+                      </div>
+                      <button onClick={() => setShowSortingOptions(false)}>Close</button>
+                      <button onClick={() => { setSortByYear(''); setSortByCitations(''); }}>Clear Filters</button>
+                  </div>
+      )}
+        
         <div className="buttons-container">
           <button className='search-button' onClick={handleSearch}>Search</button>
           <button className='advanced-search-button' onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}>
@@ -213,6 +279,6 @@ function SearchPage() {
       </div>
     </>
   );
-};
+  };
 
 export default SearchPage;

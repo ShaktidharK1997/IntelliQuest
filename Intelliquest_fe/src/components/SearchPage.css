@@ -77,9 +77,13 @@ body {
 
 .search-container form {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  padding: 20px;
+  justify-content: center;
+  width: 100%;
+}
+
+.search-input, .search-button, .sort-button {
+  margin-right: 10px;
 }
 
 .search-container form,
@@ -260,4 +264,35 @@ background-color: var(--background-light);
 border: 1px solid var(--border-color);
 border-radius: var(--border-radius);
 cursor: pointer;
+}
+
+/* Sorting */
+.sort-button {
+  padding: 10px 15px;
+  font-size: 17px;
+  background-color: var(--primary-color);
+  color: var(--text-color-white);
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  margin-left: 10px; /* Space between search button and sort button */
+  transition: background-color 0.3s ease;
+}
+
+.sort-button:hover {
+  background-color: var(--button-background-color-hover);
+}
+
+.sorting-options {
+  position: absolute;
+  background-color: var(--text-color-white);
+  box-shadow: var(--shadow-color) 0 4px 8px;
+  padding: 10px;
+  border-radius: var(--border-radius);
+  z-index: 1000; /* Ensure it appears above other elements */
+}
+
+.sorting-options label {
+  display: block;
+  margin: 5px 0;
 }
