@@ -57,7 +57,7 @@ function SearchPage() {
       }
     }
     setRandomTopics(getRandomTopics());
-  }, [currentUser, recentSearches]); // Re-pick random topics when recent searches update
+  }, []); // Changed to an empty array
 
   const handleSearch = async () => {
     // Replace with your Django API endpoint
