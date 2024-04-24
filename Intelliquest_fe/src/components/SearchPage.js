@@ -10,7 +10,24 @@ import { useSearchResults } from '..//SearchResultsContext'; // Adjust the path 
 
 import Pagination from './Pagination';
 
+// Define the topics array
+const topics = [
+  "Artificial Intelligence (AI)", "Machine Learning", "Deep Learning",
+  "Natural Language Processing (NLP)", "Quantum Computing", "Blockchain Technology",
+  "Cybersecurity", "Data Science", "Big Data Analytics", "Internet of Things (IoT)",
+  "Cloud Computing", "Edge Computing", "Computer Graphics", "Virtual Reality (VR)",
+  "Augmented Reality (AR)", "Software Engineering", "Human-Computer Interaction (HCI)",
+  "Computer Vision", "Robotics", "Ethics in Technology", "Game Development",
+  "Networks and Communications", "Database Management", "Algorithm Design",
+  "Cryptography", "Computational Biology", "Health Informatics", "E-commerce Technology",
+  "Environmental Informatics", "Autonomous Vehicles"
+];
 
+// Function to pick five random topics
+const getRandomTopics = () => {
+  const shuffled = [...topics].sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, 5);
+};
 
 function SearchPage() {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -24,7 +41,7 @@ function SearchPage() {
   const [recentSearches, setRecentSearches] = useState([]); // Added state for recent searches
   const [currentPage, setCurrentPage] = useState(1);
   const [resultsPerPage] = useState(12); 
-
+  const [randomTopics, setRandomTopics] = useState([]);
 
   // Link to signin page
   let navigate = useNavigate();
@@ -39,7 +56,8 @@ function SearchPage() {
         setRecentSearches(savedSearches);
       }
     }
-  }, [currentUser]);
+    setRandomTopics(getRandomTopics());
+  }, [currentUser, recentSearches]); // Re-pick random topics when recent searches update
 
   const handleSearch = async () => {
     // Replace with your Django API endpoint
@@ -196,6 +214,15 @@ function SearchPage() {
           ))}
         </div>
         
+        <div className="recent-searches">
+          <h3>Popular Topics:</h3>
+          {randomTopics.map((topic, index) => (
+            <button key={index} onClick={() => setQuery(topic) || handleSearch()}>
+              {topic}
+            </button>
+          ))}
+        </div>
+
         <div className="results-container">
           {results.length > 0 ? (
             currentResults.map((paper, index) => (
