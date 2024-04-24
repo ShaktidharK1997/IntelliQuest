@@ -75,8 +75,9 @@ function PaperDetail() {
   };
 
   const ViewPaper = () => {
-    if(paper && paper.downloadLink) {
-      window.open(paper.downloadLink, "_blank", "noopener noreferrer");
+    if (paper && paper.downloadLink) {
+      const container = document.getElementById('pdfViewer');
+      container.innerHTML = `<embed src="${paper.downloadLink}" type="application/pdf" width="100%" height="600px" />`;
     }
   };
 
@@ -107,6 +108,7 @@ function PaperDetail() {
           <button onClick={bookmarkPaper}>Bookmark Paper</button>
           <button onClick={seeRelatedPapers}>See Related Papers</button>
         </div>
+        <div className="pdf-viewer"id="pdfViewer"></div>
         {showRecommendedPapers && (
         <div className="recommended-papers-container">
           <h3>Recommended Papers</h3>
