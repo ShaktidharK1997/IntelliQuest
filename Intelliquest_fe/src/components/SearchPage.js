@@ -7,6 +7,8 @@ import { useAuth } from '../contexts/AuthContext';
 import { Link } from 'react-router-dom';
 import { useSearchResults } from '..//SearchResultsContext'; // Adjust the path as necessary
 
+import Pagination from './Pagination';
+
 
 
 function SearchPage() {
@@ -18,6 +20,8 @@ function SearchPage() {
   const { query, setQuery, results, setResults } = useSearchResults();
   const [expandedAbstract, setExpandedAbstract] = useState(null); 
   const [recentSearches, setRecentSearches] = useState([]); // Added state for recent searches
+  const [currentPage, setCurrentPage] = useState(1);
+  const [resultsPerPage] = useState(12); 
 
 
   // Link to signin page
@@ -86,6 +90,10 @@ function SearchPage() {
     setExpandedAbstract(expandedAbstract === index ? null : index);
   };
 
+  const indexOfLastResult = currentPage * resultsPerPage;
+  const indexOfFirstResult = indexOfLastResult - resultsPerPage;
+  const currentResults = results.slice(indexOfFirstResult, indexOfLastResult);
+
   const renderAbstract = (paper, index) => {
     const abstractText = paper.abstract || "Abstract not available";
     return expandedAbstract === index ? (
@@ -94,6 +102,9 @@ function SearchPage() {
       <p>{abstractText.substring(0, 100)}... <button className="readmore" onClick={() => toggleAbstract(index)}>Read more</button></p>
     );
   };
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  
 
   return (
     <>
@@ -176,15 +187,14 @@ function SearchPage() {
           ))}
         </div>
         
-        <div className="results-container"> 
+        <div className="results-container">
           {results.length > 0 ? (
-            results.map((paper, index) => (
+            currentResults.map((paper, index) => (
               <div key={index} className="paper">
                 <h4>
-                <Link to={`/PaperDetail?paperid=${paper.paperID}`} style={{ color: 'blue', textDecoration: 'none' }}>
-                {paper.title}
-                </Link>
-
+                  <Link to={`/PaperDetail?paperid=${paper.paperID}&source=${paper.source}`} style={{ color: 'blue', textDecoration: 'none' }}>
+                    {paper.title}
+                  </Link>
                 </h4>
                 {renderAbstract(paper, index)}
                 <p>Authors: {paper.authors.join(', ')}</p>
@@ -194,6 +204,11 @@ function SearchPage() {
           ) : (
             <p>One Stop portal for searching anything academic!</p>
           )}
+          <Pagination
+            resultsPerPage={resultsPerPage}
+            totalResults={results.length}
+            paginate={paginate}
+          />
         </div>
       </div>
     </>

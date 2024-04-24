@@ -126,3 +126,10 @@
   color: var(--primary-color); /* Make title color stand out */
   font-weight: bold; /* Optional: makes the paper titles bolder */
 }
+
+.pdf-viewer {
+  width: 100%;        /* Full width */
+  height: 90vh;       /* 90% of the viewport height */
+  border: 1px solid #ccc; /* Optional: adds a border around the PDF viewer */
+  margin-top: 20px;   /* Optional: adds space above the viewer */
+}
