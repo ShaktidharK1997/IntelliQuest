@@ -19,7 +19,7 @@ urlpatterns = [
     
     path('signin/', LoginView.as_view(), name='login'),
     path('signup/', CreateUserView.as_view(), name='signup'),
-    path('myprofile/<str:username>/', UserProfileView.as_view(), name='user-profile'),
-    path('myprofile/update_picture/<str:username>/', UserProfileView.as_view(), name='user-profile-update-picture'),
+    path('myprofile/<str:email>/', UserProfileView.as_view(), name='user-profile'),
+    path('myprofile/update_picture/<str:email>/', UserProfileView.as_view(), name='user-profile-update-picture'),
 
 ]

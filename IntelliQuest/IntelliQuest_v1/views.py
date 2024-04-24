@@ -10,7 +10,7 @@ from django_ratelimit.decorators import ratelimit
 import uuid
 from requests.exceptions import RequestException
 from django.db import transaction
-
+from rest_framework.permissions import AllowAny
 # from django.contrib.auth import authenticate
 from rest_framework.decorators import api_view
 
@@ -22,7 +22,7 @@ from django.contrib.auth import login
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import UserSerializer, ProfileSerializer, EducationSerializer, ExperienceSerializer, PublicationsSerializer
-from .models import PersonalProfile
+from .models import PersonalProfile, CustomUser
 from django.shortcuts import get_object_or_404
 from .authentication import EmailBackend, get_tokens_for_user
 
@@ -119,20 +119,28 @@ class LoginView(APIView):
             return Response({'error': 'Invalid Credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 class UserProfileView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [AllowAny]
 
-    def get(self, request):
-        profile = get_object_or_404(PersonalProfile, user=request.user)
+    def get(self, request, email):
+        # Fetch the user by email
+        # email = request.data.get('email')
+        user = get_object_or_404(CustomUser, email=email)
+        # Fetch the profile associated with the user
+        profile = get_object_or_404(PersonalProfile, user=user)
+        
+        # Serialize data
         profile_data = ProfileSerializer(profile).data
         education_data = EducationSerializer(profile.education.all(), many=True).data
         experience_data = ExperienceSerializer(profile.experience.all(), many=True).data
         publications_data = PublicationsSerializer(profile.publications.all(), many=True).data
-
+        
+        # Update profile data dictionary with related data
         profile_data.update({
             'education': education_data,
             'experience': experience_data,
             'publications': publications_data
         })
+
         return Response(profile_data)
 
     def put(self, request):

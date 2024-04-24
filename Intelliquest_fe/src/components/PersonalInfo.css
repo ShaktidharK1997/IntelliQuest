@@ -80,16 +80,11 @@ input[type="file"] {
 
 .save-btn {
   background-color: #4CAF50; /* Green for save */
-  color: white;
-  padding: 0.6rem 1.2rem;
-  border-radius: 4px;
-  margin-top: 10px; /* Space from the upload button */
-  cursor: pointer;
 }
 
 .save-btn:hover {
-  background-color: #45a049; /* Darker
-
+  background-color: #45a049; /* Darker green on hover */
+}
 
 .cancel-btn {
   background-color: #f44336; /* Red for cancel */

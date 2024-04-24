@@ -1,42 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import './SearchPage.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import Logo from '../logo.svg';
 import CenterLogo from '../center_logo.svg';
-import { useAuth } from '../contexts/AuthContext';
-import { Link } from 'react-router-dom';
-import { useSearchResults } from '..//SearchResultsContext'; // Adjust the path as necessary
-
-
+import { useAuth } from '../contexts/AuthContext'; // Ensure this import is correct
+import { useSearchResults } from '../SearchResultsContext'; // Adjust the path as necessary
 
 function SearchPage() {
-  const { currentUser, signOut } = useAuth();
+  const { authState } = useAuth();
+  const { signOut } = useAuth(); // Ensure this import is correct
+  console.log(authState.user);
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
   const [yearFrom, setYearFrom] = useState('');
   const [yearTo, setYearTo] = useState('');
   const [authorName, setAuthorName] = useState('');
   const { query, setQuery, results, setResults } = useSearchResults();
   const [expandedAbstract, setExpandedAbstract] = useState(null); 
-  const [recentSearches, setRecentSearches] = useState([]); // Added state for recent searches
+  const [recentSearches, setRecentSearches] = useState([]);
 
-
-  // Link to signin page
   let navigate = useNavigate();
-  const handleSignInClick = () => {
-    navigate('/signin'); // Navigate to the sign-in page
-  };
 
   useEffect(() => {
-    if (currentUser) {
-      const savedSearches = JSON.parse(localStorage.getItem(`recentSearches_${currentUser.id}`));
+    if (authState.user) {
+      const savedSearches = JSON.parse(localStorage.getItem(`recentSearches_${authState.user}`)); // Use user.id
       if (savedSearches) {
         setRecentSearches(savedSearches);
       }
     }
-  }, [currentUser]);
+  }, [authState.user]);
 
   const handleSearch = async () => {
-    // Replace with your Django API endpoint
     const apiUrl = `http://127.0.0.1:8000/IntelliQuest_v1/search/?query=${query}`;
     console.log(apiUrl);
     try {
@@ -54,11 +47,11 @@ function SearchPage() {
       });
       setResults(filteredResults);
       
-      // Update recent searches, ensuring no duplicates and limiting to 5 items
+      // Update recent searches
       setRecentSearches(prevSearches => {
         const updatedSearches = [query, ...prevSearches.filter(q => q !== query)].slice(0, 5);
-        if (currentUser) {
-          localStorage.setItem(`recentSearches_${currentUser.id}`, JSON.stringify(updatedSearches));
+        if (authState.user) {
+          localStorage.setItem(`recentSearches_${authState.user}`, JSON.stringify(updatedSearches));
         }
         return updatedSearches;
       });
@@ -69,8 +62,8 @@ function SearchPage() {
   };
 
   function resetSearch() {
-    setQuery(''); // Resets the query string
-    setResults([]); // Resets the search results
+    setQuery('');
+    setResults([]);
     setShowAdvancedSearch(false);
     setYearFrom('');
     setYearTo('');
@@ -103,15 +96,15 @@ function SearchPage() {
         </div>
       </div>
       <div className="header-right">
-      {currentUser ? (
-        <>
-          <span>{`User ID: ${currentUser.id}`}</span>
-          <button onClick={signOut}>Sign Out</button>
-        </>
-      ) : (
-        <button onClick={handleSignInClick}>Sign In</button>
-      )}
-        <button onClick={() => window.location='/myprofile'}>Settings</button>
+        {authState.user ? (
+          <>
+            <span>{`User ID: ${authState.user}`}</span>
+            <button onClick={signOut}>Sign Out</button>
+          </>
+        ) : (
+          <button onClick={() => navigate('/signin')}>Sign In</button>
+        )}
+        <button onClick={() => navigate('/myprofile')}>My Profile</button>
       </div>
 
       <div className='search-container'>

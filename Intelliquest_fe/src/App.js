@@ -10,12 +10,7 @@ import PersonalInfo from './components/PersonalInfo';
 import Education from './components/Education';
 import Experience from './components/Experience';
 import Publications from './components/Publications';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
-
-function PrivateRoute({ children }) {
-  const { user } = useAuth();  // useAuth now directly provides the user object
-  return user ? children : <Navigate to="/signin" replace />;
-}
+import { AuthProvider } from './contexts/AuthContext';
 
 function App() {
   return (
@@ -27,13 +22,21 @@ function App() {
             <Route path="/signin" element={<SignInPage />} />
             <Route path="/signup" element={<SignUpPage />} />
             <Route path="/paperdetail/:id" element={<PaperDetail />} />
-            <Route path="/myprofile/*" element={<PrivateRoute><ProfileLayout /></PrivateRoute>}>
-              <Route index element={<Navigate to="personalinfo" replace />} />
-              <Route path="personalinfo" element={<PersonalInfo />} />
-              <Route path="education" element={<Education />} />
-              <Route path="experience" element={<Experience />} />
-              <Route path="publications" element={<Publications />} />
-            </Route>
+            <Route path="/myprofile/*" element={
+                        <ProfileLayout>
+                            <Routes>  {/* Nested Routes inside ProfileLayout */}
+                                <Route index element={<PersonalInfo />} />
+                                <Route path="personalinfo" element={<PersonalInfo />} />
+                                <Route path="education" element={<Education />} />
+                                <Route path="publications" element={<Publications />} />
+                                <Route path="experience" element={<Experience />} />
+                                {/* Additional nested routes can be configured here */}
+                                {/* <Route path="experience" element={<Experience />} />
+                                <Route path="published-articles" element={<Publications />} /> */}
+                            </Routes>
+                        </ProfileLayout>
+                    }>
+              </Route>
           </Routes>
         </SearchResultsProvider>
       </AuthProvider>

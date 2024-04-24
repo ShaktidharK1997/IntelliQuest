@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import './SideBar.css'; // Make sure to create a Sidebar.css file for styling
+import './SideBar.css'; // Make sure your CSS styles are correctly named and imported
 
 function Sidebar() {
   return (
@@ -8,22 +8,34 @@ function Sidebar() {
       <nav>
         <ul className="sidebar-nav">
           <li>
-            <NavLink to="/myprofile" activeClassName="active">
+            <NavLink
+              to="/myprofile"
+              className={({ isActive }) => (isActive ? 'active' : undefined)}
+            >
               Personal Information
             </NavLink>
           </li>
           <li>
-            <NavLink to="/myprofile/education" activeClassName="active">
+            <NavLink
+              to="/myprofile/education"
+              className={({ isActive }) => (isActive ? 'active' : undefined)}
+            >
               Education
             </NavLink>
           </li>
           <li>
-            <NavLink to="/myprofile/experience" activeClassName="active">
+            <NavLink
+              to="/myprofile/experience"
+              className={({ isActive }) => (isActive ? 'active' : undefined)}
+            >
               Experience
             </NavLink>
           </li>
           <li>
-            <NavLink to="/myprofile/publications" activeClassName="active">
+            <NavLink
+              to="/myprofile/publications"
+              className={({ isActive }) => (isActive ? 'active' : undefined)}
+            >
               Published Articles
             </NavLink>
           </li>

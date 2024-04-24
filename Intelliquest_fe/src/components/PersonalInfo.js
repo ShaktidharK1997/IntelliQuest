@@ -2,17 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext'; // Ensure the path is correct based on your project structure
 import './PersonalInfo.css';
-
 function PersonalInfo() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    const { authState } = useAuth(); // Assuming authState includes user and tokens
+    const { authState } = useAuth();
+    const { signOut } = useAuth(); // Assuming authState includes user and tokens
     const navigate = useNavigate();
     const [newProfilePic, setNewProfilePic] = useState(null);
     const [data, setData] = useState({
         profile_picture: '',
-        first_name: 'Not provided',
-        last_name: 'Not provided',
+        first_name: 'N/A',
+        last_name: 'N/A',
         date_of_birth: '',
         email: '',
         contact: '',
@@ -31,10 +31,10 @@ function PersonalInfo() {
     const fetchProfileData = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`http://localhost:8000/myprofile/${authState.user.username}/`, {
+            const response = await fetch(`http://localhost:8000/IntelliQuest_v1/myprofile/${authState.user}/`, {
                 method: 'GET',
                 headers: {
-                    'Authorization': `Bearer ${authState.tokens.access}`,
+                   // 'Authorization': `Bearer ${authState.tokens}`,
                     'Content-Type': 'application/json',
                 },
             });
@@ -43,10 +43,12 @@ function PersonalInfo() {
                 throw new Error(errorData.message || 'Unable to fetch data');
             }
             const profileData = await response.json();
+            console.log(profileData);
+
             setData({
                 ...data,
                 ...profileData,
-                profile_picture: profileData.profile_picture || 'default_profile.png',
+                profile_picture: profileData.profile_picture || '../../public/images/profile_icon.jpeg',
                 isEditing: false
             });
         } catch (error) {
@@ -77,10 +79,10 @@ function PersonalInfo() {
         formData.append('profile_picture', newProfilePic);
 
         try {
-            const response = await fetch(`http://localhost:8000/myprofile/update_picture/${authState.user.username}/`, {
+            const response = await fetch(`http://localhost:8000/IntelliQuest_v1/myprofile/update_picture/${authState.user}/`, {
                 method: 'PUT',
                 headers: {
-                    'Authorization': `Bearer ${authState.tokens.access}`,
+                    'Authorization': `Bearer ${authState.tokens}`,
                 },
                 body: formData,
             });
@@ -104,10 +106,10 @@ function PersonalInfo() {
             await handleProfilePicUpload();
         }
         try {
-            const response = await fetch(`http://localhost:8000/myprofile/${authState.user.username}/`, {
+            const response = await fetch(`http://localhost:8000/IntelliQuest_v1/myprofile/${authState.user}/`, {
                 method: 'PUT',
                 headers: {
-                    'Authorization': `Bearer ${authState.tokens.access}`,
+                    'Authorization': `Bearer ${authState.tokens}`,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(data),

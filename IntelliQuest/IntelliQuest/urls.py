@@ -19,7 +19,7 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',include("IntelliQuest_v1.urls"))
+    path('IntelliQuest_v1/',include("IntelliQuest_v1.urls"))
 
 # No additional URLs to add at this moment.
 ]

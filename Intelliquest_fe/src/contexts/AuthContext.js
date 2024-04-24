@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }) => {
 
     const signIn = async ({ email, password }) => {
         try {
-            const response = await fetch('http://localhost:8000/signin/', {
+            const response = await fetch('http://localhost:8000/IntelliQuest_v1/signin/', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password }),
@@ -36,13 +36,13 @@ export const AuthProvider = ({ children }) => {
                 throw new Error(errorData.error || 'Failed to sign in');
             }
             const data = await response.json();
-            setAuthState(prev => ({
-                user: {
-                    ...prev.user,
-                    ...data.user,
-                },
-                tokens: data.tokens,
-            }));
+            console.log(data);
+            setAuthState({
+                user:  data.email // store only the email address
+                ,
+                tokens: data.access // assuming data.tokens contains the necessary token information
+            });
+            ;
         } catch (error) {
             console.error('Login failed:', error);
             throw error;
@@ -56,7 +56,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ ...authState, signIn, signOut }}>
+        <AuthContext.Provider value={{ authState, signIn, signOut }}>
             {children}
         </AuthContext.Provider>
     );
