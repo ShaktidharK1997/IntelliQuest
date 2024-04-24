@@ -12,16 +12,18 @@ function PaperDetail() {
   const [error, setError] = useState('');
   const [recommendedPapers, setRecommendedPapers] = useState([]);
   const [showRecommendedPapers, setShowRecommendedPapers] = useState(false);
+
   
   const paperId = new URLSearchParams(location.search).get('paperid');
+  const source = new URLSearchParams(location.search).get('source');
 
   useEffect(() => {
     const fetchPaperDetails = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/IntelliQuest_v1/paper/?paperid=${paperId}`);
+        const response = await fetch(`http://127.0.0.1:8000/IntelliQuest_v1/paper/?paperid=${paperId}&source=${source}`);
         const data = await response.json();
-        if (data.length > 0) {
-          setPaper(data[0]);
+        if (data) {
+          setPaper(data);
         } else {
           setError("Paper not found.");
         }
@@ -73,8 +75,9 @@ function PaperDetail() {
   };
 
   const ViewPaper = () => {
-    if(paper && paper.downloadlink) {
-      window.open(paper.downloadlink, "_blank", "noopener noreferrer");
+    if (paper && paper.downloadLink) {
+      const container = document.getElementById('pdfViewer');
+      container.innerHTML = `<embed src="${paper.downloadLink}" type="application/pdf" width="100%" height="600px" />`;
     }
   };
 
@@ -105,6 +108,7 @@ function PaperDetail() {
           <button onClick={bookmarkPaper}>Bookmark Paper</button>
           <button onClick={seeRelatedPapers}>See Related Papers</button>
         </div>
+        <div className="pdf-viewer"id="pdfViewer"></div>
         {showRecommendedPapers && (
         <div className="recommended-papers-container">
           <h3>Recommended Papers</h3>
