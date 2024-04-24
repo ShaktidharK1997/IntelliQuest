@@ -270,6 +270,7 @@ cursor: pointer;
   align-items: center; /* Center align the items horizontally */
   justify-content: center; /* Center align the items vertically */
   width: 100%;
+}
 
 .dropdown {
   display: none;
