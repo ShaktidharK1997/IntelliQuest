@@ -66,7 +66,7 @@ body {
   align-items: center;
   justify-content: center; /* This will center the children horizontally */
   padding: 20px;
-  margin: 0;
+  margin-bottom: 20px;
   width: 100%; /* Ensures full width */
 }
 
@@ -79,26 +79,61 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-}
-
-.search-input, .search-button, .sort-button {
-  margin-right: 10px;
+  width: 60%;
 }
 
 .search-container form,
 .search-container input[type="text"],
 .search-button {
-  width: 100%;
-  max-width: 300px; /* Controls the maximum width */
+  max-width: 500px; /* Controls the maximum width */
 }
 
-.search-container input[type="text"] {
+.search-input {
+  flex-grow: 1; /* Allow input to grow and fill the container */
+  margin: 0; /* Remove margin to align properly with the button */
   padding: 10px;
   font-size: 17px;
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
-  margin-bottom: 15px; /* Space between input and button */
+}
+
+.search-sort-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 10px; /* Adjust the space between buttons */
+}
+
+/* Sorting */
+.sort-button {
+  padding: 10px 15px;
+  font-size: 17px;
+  background-color: var(--primary-color);
+  color: var(--text-color-white);
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  margin-left: 10px; /* Space between search button and sort button */
+  transition: background-color 0.3s ease;
+}
+
+.sort-button:hover {
+  background-color: var(--button-background-color-hover);
+}
+
+.sorting-options {
+  position: relative;
+  background-color: var(--text-color-white);
+  box-shadow: var(--shadow-color) 0 4px 8px;
+  padding: 10px;
+  border-radius: var(--border-radius);
+  z-index: 1000; /* Ensure it appears above other elements */
+}
+
+.sorting-options label {
+  display: block;
+  margin: 5px 0;
 }
 
 .search-button {
@@ -264,35 +299,4 @@ background-color: var(--background-light);
 border: 1px solid var(--border-color);
 border-radius: var(--border-radius);
 cursor: pointer;
-}
-
-/* Sorting */
-.sort-button {
-  padding: 10px 15px;
-  font-size: 17px;
-  background-color: var(--primary-color);
-  color: var(--text-color-white);
-  border: none;
-  border-radius: var(--border-radius);
-  cursor: pointer;
-  margin-left: 10px; /* Space between search button and sort button */
-  transition: background-color 0.3s ease;
-}
-
-.sort-button:hover {
-  background-color: var(--button-background-color-hover);
-}
-
-.sorting-options {
-  position: absolute;
-  background-color: var(--text-color-white);
-  box-shadow: var(--shadow-color) 0 4px 8px;
-  padding: 10px;
-  border-radius: var(--border-radius);
-  z-index: 1000; /* Ensure it appears above other elements */
-}
-
-.sorting-options label {
-  display: block;
-  margin: 5px 0;
 }

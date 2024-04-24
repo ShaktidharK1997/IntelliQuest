@@ -165,15 +165,15 @@ function SearchPage() {
           <img src={CenterLogo} alt="Center Logo" className="center-logo" />
           <h1>IntelliQuest</h1>
         </div>
-
+        <div className="search-sort-container">
         <input className='search-input'
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search papers..."
         />
-
         <button className='sort-button' onClick={() => setShowSortingOptions(!showSortingOptions)}>Sort</button>
+        </div>
           {showSortingOptions && (
                   <div className="sorting-options">
                       <div>
