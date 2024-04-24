@@ -106,7 +106,7 @@ function PersonalInfo() {
             await handleProfilePicUpload();
         }
         try {
-            const response = await fetch(`http://localhost:8000/IntelliQuest_v1/myprofile/${authState.user}/`, {
+            const response = await fetch(`http://localhost:8000/IntelliQuest_v1/myprofile/update_profile/${authState.user}/`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${authState.tokens}`,
@@ -131,54 +131,45 @@ function PersonalInfo() {
     if (error) return <div>Error: {error}</div>;
 
     return (
-        <div className="personal-info">
-            <h1>Personal Information</h1>
-            <form onSubmit={handleFormSubmit}>
-                <div className="form-group profile-pic">
-                    <label htmlFor="profilePicUpload">Profile Picture</label>
-                    <img src={data.profile_picture} alt="Profile" className="profile-preview" />
-                    <input type="file" id="profilePicUpload" accept="image/*" onChange={handleProfilePicChange} />
-                    {data.isEditing && <button type="button" onClick={handleProfilePicUpload} className="btn upload-btn">Upload</button>}
-                </div>
-                {data.isEditing ? (
-                    Object.entries(data)
-                        .filter(([key]) => key !== 'isEditing' && key !== 'profile_picture')
-                        .map(([key, value]) => (
-                            <div className="form-group" key={key}>
-                                <label htmlFor={key}>{key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</label>
-                                <input
-                                    type={key === 'date_of_birth' ? 'date' : 'text'}
-                                    id={key}
-                                    name={key}
-                                    value={value}
-                                    onChange={handleInputChange}
-                                    className="form-control"
-                                />
-                            </div>
-                        ))
-                ) : (
-                    Object.entries(data)
-                        .filter(([key]) => key !== 'isEditing' && key !== 'profile_picture')
-                        .map(([key, value]) => (
-                            <div className="form-group" key={key}>
-                                <label>{key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:</label>
-                                <span>{value}</span>
-                            </div>
-                        ))
-                )}
-                <div className="form-actions">
-                    {data.isEditing ? (
-                        <>
-                            <button type="submit" className="btn save-btn">Save Changes</button>
-                            <button type="button" className="btn cancel-btn" onClick={toggleEdit}>Cancel</button>
-                        </>
-                    ) : (
-                        <button type="button" className="btn edit-btn" onClick={toggleEdit}>Edit</button>
-                    )}
-                </div>
-            </form>
+      <div className="personal-info">
+        <h1>Personal Information</h1>
+        <form onSubmit={handleFormSubmit}>
+        <div className="form-group profile-pic">
+          <label htmlFor="profilePicUpload">Profile Picture</label>
+          <img src={data.profile_picture || newProfilePic} alt="Profile" className="profile-preview" />
+          <input type="file" id="profilePicUpload" accept="image/*" onChange={handleProfilePicChange} />
+          <button type="button" onClick={handleProfilePicUpload}>Upload</button>
         </div>
+          <div className="form-group">
+            <label htmlFor="firstName">First Name</label>
+            <input type="text" id="firstName" name="firstName" value={data.first_name} onChange={e => setData({ ...data, first_name: e.target.value })} />
+          </div>
+          <div className="form-group">
+            <label htmlFor="lastName">Last Name</label>
+            <input type="text" id="lastName" name="lastName" value={data.last_name} onChange={e => setData({ ...data, last_name: e.target.value })} />
+          </div>
+          <div className="form-group">
+            <label htmlFor="dateOfBirth">Date of Birth</label>
+            <input type="date" id="dateOfBirth" name="dateOfBirth" value={data.date_of_birth} onChange={e => setData({ ...data, date_of_birth: e.target.value })} />
+          </div>
+          <div className="form-group">
+            <label htmlFor="email">Email</label>
+            <input type="email" id="email" name="email" value={data.email} onChange={e => setData({ ...data, email: e.target.value })} />
+          </div>
+          <div className="form-group">
+            <label htmlFor="contact">Contact Number</label>
+            <input type="tel" id="contact" name="contact" value={data.contact} onChange={e => setData({ ...data, contact: e.target.value })} />
+          </div>
+          <div className="form-group">
+            <label htmlFor="location">Location</label>
+            <input type="text" id="location" name="location" value={data.location} onChange={e => setData({ ...data, location: e.target.value })} />
+          </div>
+          <div className="form-actions">
+            <button type="submit">Save Changes</button>
+          </div>
+        </form>
+      </div>
     );
-}
-
-export default PersonalInfo;
+  }
+  
+  export default PersonalInfo;
