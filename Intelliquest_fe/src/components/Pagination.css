@@ -1,0 +1,40 @@
+/* Pagination.css */
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style-type: none;
+    padding: 0;
+    margin: 20px 0; /* Adds vertical space above and below the pagination */
+  }
+  
+  .page-item {
+    margin: 0 5px; /* Spacing between buttons */
+  }
+  
+  .page-link {
+    border: 1px solid #007bff; /* Blue border color */
+    color: #007bff; /* Blue text color */
+    background-color: #fff;
+    padding: 8px 16px; /* Padding inside buttons */
+    cursor: pointer;
+    text-decoration: none;
+    border-radius: 5px; /* Rounded corners for the buttons */
+    font-size: 16px; /* Larger font size for better readability */
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effects */
+  }
+  
+  .page-link:hover,
+  .page-link:focus {
+    background-color: #007bff; /* Blue background on hover/focus */
+    color: #fff; /* White text on hover/focus */
+    outline: none;
+  }
+  
+  .page-item.active .page-link {
+    background-color: #000000; /* Darker blue background for active page */
+    color: #ffffff; /* White text for active page */
+    cursor: default;
+  }
+  

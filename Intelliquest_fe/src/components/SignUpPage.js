@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { GoogleLogin } from 'react-google-login';
+//import { GoogleLogin } from 'react-google-login';
 import './SignUpPage.css'; // Ensure you import the CSS stylesheet
 
 function SignUpPage() {
@@ -54,10 +54,10 @@ function SignUpPage() {
     }
   };
 
-  const responseGoogle = (response) => {
+/*   const responseGoogle = (response) => {
     console.log(response);
     // Implement Google sign-up/login logic here
-  };
+  }; */
 
   return (
     <div className="signup-container">
@@ -84,15 +84,17 @@ function SignUpPage() {
         {error && <div className="error-message">{error}</div>} {/* Display error message if any */}
         <button type="submit" className="signup-button">Sign Up</button>
       </form>
-      <GoogleLogin
+{/*       <GoogleLogin
         clientId="454933535483-apt2pd791htjnfdvdmt1mui3psskai96.apps.googleusercontent.com"
         buttonText="Sign Up with Google"
         onSuccess={responseGoogle}
         onFailure={responseGoogle}
         cookiePolicy={'single_host_origin'}
         className="google-login-button"
-      />
+
+       /> */}
       <button onClick={() => navigate('/signin')} className="signup-back-button">Back to Login</button>
+
     </div>
   );
 }
