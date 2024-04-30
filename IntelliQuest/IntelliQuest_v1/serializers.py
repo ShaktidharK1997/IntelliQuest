@@ -1,27 +1,36 @@
-from django.conf import settings
+# serializers.py
+
 from django.contrib.auth import get_user_model
-from rest_framework import serializers
 from django.contrib.auth.password_validation import validate_password
-from .models import Education, Experience, Publications, PersonalProfile
+from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
+from .models import PersonalProfile, Education, Experience, Publications
 
 User = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(required=True, allow_blank=False, validators=[validate_password])
+    email = serializers.EmailField(
+        required=True,
+        allow_blank=False,
+        validators=[
+            UniqueValidator(queryset=User.objects.all(), message="A user with that email already exists.")
+        ]
+    )
 
     class Meta:
         model = User
         fields = ['email', 'password']
         extra_kwargs = {
-            'password': {'write_only': True, 'min_length': 8},
-            'email': {'required': True, 'allow_blank': False}
+            'password': {
+                'write_only': True,
+                'min_length': 8,
+                'validators': [validate_password]
+            },
+            'email': {
+                'required': True,
+                'allow_blank': False
+            }
         }
-
-    def validate_email(self, value):
-        value = value.lower().strip()
-        if User.objects.filter(email=value).exists():
-            raise serializers.ValidationError("A user with that email already exists.")
-        return value
 
     def create(self, validated_data):
         return User.objects.create_user(
@@ -41,7 +50,7 @@ class UserSerializer(serializers.ModelSerializer):
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = PersonalProfile
-        fields = ['user', 'first_name', 'last_name', 'date_of_birth', 'contact', 'location', 'profile_picture']
+        fields = '__all__'
         extra_kwargs = {
             'user': {'read_only': True}
         }
@@ -51,7 +60,7 @@ class EducationSerializer(serializers.ModelSerializer):
         model = Education
         fields = '__all__'
         extra_kwargs = {
-            'personal_info': {'read_only': True}
+            'personal_profile': {'read_only': True}
         }
 
 class ExperienceSerializer(serializers.ModelSerializer):
@@ -59,18 +68,14 @@ class ExperienceSerializer(serializers.ModelSerializer):
         model = Experience
         fields = '__all__'
         extra_kwargs = {
-            'personal_info': {'read_only': True}
+            'personal_profile': {'read_only': True}
         }
 
-    def validate(self, data):
-        if data['end_date'] and data['end_date'] < data['start_date']:
-            raise serializers.ValidationError("End date must be after the start date.")
-        return data
 
 class PublicationsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Publications
         fields = '__all__'
         extra_kwargs = {
-            'personal_info': {'read_only': True}
+            'personal_profile': {'read_only': True}
         }
