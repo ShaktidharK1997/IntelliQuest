@@ -199,7 +199,7 @@ function SearchPage() {
           placeholder="Search papers..."
         />
         <button className='search-button' onClick={handleSearch}>Search</button>
-        <button className='sort-button' onClick={() => setShowSortingOptions(!showSortingOptions)}>Sort</button>
+        <button className='sort-button' onClick={() => setShowSortingOptions(!showSortingOptions)}>Sort By</button>
         </div>
           {showSortingOptions && (
                   <div className="sorting-options">
@@ -233,7 +233,7 @@ function SearchPage() {
         <div className="buttons-container">
           {/* <button className='search-button' onClick={handleSearch}>Search</button> */}
           <button className='advanced-search-button' onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}>
-            Advanced
+            Advanced Search
           </button>
         </div>
         {showAdvancedSearch && (
