@@ -299,7 +299,7 @@ function SearchPage() {
                   </Link>
                 </h4>
                 {renderAbstract(paper, index)}
-                <p>Authors: {paper.authors.join(', ')}</p>
+                <p><strong>Authors:</strong> {paper.authors.map(author => author.name).join(', ')}</p>
                 <p>Year : {paper.year}</p>
               </div>
             ))
