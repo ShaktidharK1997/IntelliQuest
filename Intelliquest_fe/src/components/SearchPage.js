@@ -198,6 +198,7 @@ function SearchPage() {
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search papers..."
         />
+        <button className='search-button' onClick={handleSearch}>Search</button>
         <button className='sort-button' onClick={() => setShowSortingOptions(!showSortingOptions)}>Sort</button>
         </div>
           {showSortingOptions && (
@@ -230,7 +231,7 @@ function SearchPage() {
       )}
         
         <div className="buttons-container">
-          <button className='search-button' onClick={handleSearch}>Search</button>
+          {/* <button className='search-button' onClick={handleSearch}>Search</button> */}
           <button className='advanced-search-button' onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}>
             Advanced
           </button>
