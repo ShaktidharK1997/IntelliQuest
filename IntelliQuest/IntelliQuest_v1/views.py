@@ -277,23 +277,52 @@ class ExperienceView(APIView):
 class PublicationsView(APIView):
     permission_classes = [AllowAny]
 
-    def get(self, request, user_id):
-        logger.debug(f"Fetching publication records for user ID: {user_id}")
-        publications = Publications.objects.filter(personal_profile__user_id=user_id)
+    def get(self, request, email):
+        logger.debug(f"Fetching publication records for user with email: {email}")
+        user = get_object_or_404(CustomUser, email=email)
+        profile = get_object_or_404(PersonalProfile, user=user)
+        publications = Publications.objects.filter(personal_info_id=profile.id)
         serializer = PublicationsSerializer(publications, many=True)
         return Response(serializer.data)
 
-    def post(self, request, user_id):
-        logger.debug(f"Creating new publication record for user ID: {user_id}")
+    def post(self, request, email):
+        logger.debug(f"Creating new publication record for user with email: {email}")
+        user = get_object_or_404(CustomUser, email=email)
+        profile = get_object_or_404(PersonalProfile, user=user)
+        
+        # Since the client doesn't handle profile IDs, automatically attach the profile ID to the data
+        request.data['personal_info'] = profile.id
         serializer = PublicationsSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(personal_profile_id=user_id)
-            logger.info(f"Publication record created for user ID: {user_id}")
+            serializer.save()
+            logger.info(f"Publication record created for user with email: {email}")
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             logger.error(f"Validation errors: {serializer.errors}")
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def put(self, request, email, pub_id):
+        logger.debug(f"Updating publication record for user with email: {email}")
+        user = get_object_or_404(CustomUser, email=email)
+        profile = get_object_or_404(PersonalProfile, user=user)
+        publication = get_object_or_404(Publications, id=pub_id, personal_info_id=profile.id)
+        request.data['personal_info'] = profile.id
+        serializer = PublicationsSerializer(publication, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            logger.error(f"Failed to update publication record: {serializer.errors}")
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, email, pub_id):
+        logger.debug(f"Deleting publication record for user with email: {email}")
+        user = get_object_or_404(CustomUser, email=email)
+        publication = get_object_or_404(Publications, id=pub_id, personal_profile__user=user)
+        
+        publication.delete()
+        logger.info(f"Publication record deleted for user with email: {email}")
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 SEMANTIC_SCHOLAR_API_KEY = '8kxH5DVIYTaE4X2naV3l83RYdf0bYxg7DSFdd7U3'
 
