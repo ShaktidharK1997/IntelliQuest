@@ -97,15 +97,29 @@ def get_paper_details(paper_id, source):
 
     if source == '1':  # Semantic Scholar
         query_params = {
-            'fields': 'paperId,title,publicationVenue,year,authors.name,abstract,citationCount,isOpenAccess,openAccessPdf,fieldsOfStudy,journal,publicationDate'
+            'fields': 'paperId,title,publicationVenue,year,authors,abstract,citationCount,isOpenAccess,openAccessPdf,fieldsOfStudy,journal,publicationDate'
         }
         result = make_semantic_scholar_request(f'paper/{paper_id}', query_params=query_params)
         print(result)
         if result:
             publication_venue = ""
+            download_link = ""
+            journal_name = ""
             pub_venue = result.get('publicationVenue', {})
             if pub_venue:
                 publication_venue = pub_venue.get('name')
+
+            oap = result.get('openAccessPdf', {})
+
+            if oap:
+                download_link = oap.get('url')
+
+            ijournal = result.get('journal', {})
+            if ijournal:
+                journal_name = ijournal.get('name')
+
+
+
             paper_details = {
                 'title': result.get('title', 'No title available'),
                 'paperID': result.get('paperId'),
@@ -113,11 +127,11 @@ def get_paper_details(paper_id, source):
                 'abstract': result.get('abstract', 'Abstract not available'),
                 'citationCount': result.get('citationCount', 0),
                 'isOpenAccess': result.get('isOpenAccess', False),
-                'downloadLink': result.get('openAccessPdf', {}).get('url', ''),
-                'authors': [author['name'] for author in result.get('authors', [])],
+                'downloadLink': download_link,
+                'authors': result.get('authors', []),
                 'publicationVenue': publication_venue,
                 'fieldsOfStudy': result.get('fieldsOfStudy', []),
-                'journalName': result.get('journal', {}).get('name', 'No journal available'),
+                'journalName': journal_name,
                 'publicationDate': result.get('publicationDate', 'No publication date available')
             }
     elif source == '2':  # CORE
@@ -130,7 +144,7 @@ def get_paper_details(paper_id, source):
                 'abstract': result.get('abstract', 'Abstract not available'),
                 'citationCount': result.get('citationCount', 0),
                 'downloadLink': result.get('downloadUrl', ''),
-                'authors': [author['name'] for author in result.get('authors', [])],
+                'authors': result.get('authors', []),
                 'dataProvider': result.get('dataProvider', {}).get('name', 'No data provider available'),
                 'publicationDate': result.get('publishedDate', 'No publication date available')
             }
@@ -142,7 +156,7 @@ def get_paper_details(paper_id, source):
 def get_bulk_paper_details(paper_ids):
     endpoint = 'https://api.semanticscholar.org/graph/v1/paper/batch'
     headers = {'x-api-key': SEMANTIC_SCHOLAR_API_KEY}
-    params = {'fields': 'paperId,title,publicationVenue,year,authors.name,abstract,citationCount,isOpenAccess,openAccessPdf,fieldsOfStudy,journal,publicationDate'}
+    params = {'fields': 'paperId,title,publicationVenue,year,authors,abstract,citationCount,isOpenAccess,openAccessPdf,fieldsOfStudy,journal,publicationDate'}
     data = {"ids": paper_ids}
 
     try:
@@ -191,10 +205,11 @@ def search_articles(request):
                     'paperID': paper_details.get('paperId', 'No ID available'),
                     'year': paper_details.get('year', 'Year not available'),
                     'abstract': paper_details.get('abstract', 'Abstract not available'),
-                    'authors': [author['name'] for author in paper_details.get('authors', [])],
+                    'authors': paper_details.get('authors', []),
                     'downloadlink': link,
                     'venue' : publication_venue_name,
-                    'source' : 1
+                    'source' : 1,
+                    'citationCount': paper_details.get('citationCount', 0)
                 }
                 results.append(paper_info)
 
@@ -209,9 +224,10 @@ def search_articles(request):
                 'paperID': paper.get('id', 'No ID available'),
                 'year': paper.get('yearPublished', 'Year not available'),
                 'abstract': paper.get('abstract', 'Abstract not available'),
-                'authors': [author['name'] for author in paper.get('authors', [])],
+                'authors': paper.get('authors', []),
                 'downloadlink': paper.get('downloadUrl', ''),
-                'source' : 2
+                'source' : 2,
+                'citationCount': paper.get('citationCount', 0)
             }
             results.append(paper_info)
 
@@ -244,3 +260,8 @@ def sign_up(request):
         return Response({"message": "Sign up successful"}, status=status.HTTP_201_CREATED)
     else:
         return Response({"error": "User with this email already exists"}, status=status.HTTP_400_BAD_REQUEST)
+    
+"""     
+@api_view(['GET'])
+def get_author_data(request):
+     """

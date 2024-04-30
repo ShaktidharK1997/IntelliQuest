@@ -3,6 +3,10 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import Logo from '../logo.svg';
 import { useAuth } from '../contexts/AuthContext';
 import './PaperDetail.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faDownload, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
+import { Link } from 'react-router-dom';
+import AuthorPopup from './AuthorPopup';
 
 function PaperDetail() {
   const navigate = useNavigate();
@@ -12,6 +16,9 @@ function PaperDetail() {
   const [error, setError] = useState('');
   const [recommendedPapers, setRecommendedPapers] = useState([]);
   const [showRecommendedPapers, setShowRecommendedPapers] = useState(false);
+  const [showPDF, setShowPDF] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const [selectedAuthor, setSelectedAuthor] = useState({});
 
   
   const paperId = new URLSearchParams(location.search).get('paperid');
@@ -24,6 +31,9 @@ function PaperDetail() {
         const data = await response.json();
         if (data) {
           setPaper(data);
+          setRecommendedPapers([]);  // Reset recommended papers
+          setShowRecommendedPapers(false);  // Hide the recommended papers section
+          setShowPDF(false);  // Hide the PDF viewer
         } else {
           setError("Paper not found.");
         }
@@ -40,6 +50,27 @@ function PaperDetail() {
     console.log("Bookmarking paper", paperId);
     // Implement bookmarking logic here
   };
+
+  const handleAuthorClick = async (author) => {
+    try {
+      const response = await fetch(`https://api.semanticscholar.org/graph/v1/author/${author.authorId}/papers?limit=10`);
+      const papersData = await response.json();
+      
+      // Format the author data to include the author's name and ID along with the papers
+      const formattedAuthorData = {
+        name: author.name,
+        authorId: author.authorId,
+        papers: papersData.data  // Accessing the 'data' field for papers
+      };
+  
+      console.log(formattedAuthorData); // Logging to see the structure
+      setSelectedAuthor(formattedAuthorData);
+      setShowPopup(true);
+    } catch (error) {
+      console.error("Failed to fetch author details:", error);
+    }
+  };
+  
 
   const fetchRecommendedPapers = async (positivePaperIds, negativePaperIds) => {
     try {
@@ -76,6 +107,9 @@ function PaperDetail() {
 
   const ViewPaper = () => {
     if (paper && paper.downloadLink) {
+      setShowPDF(true);
+    }
+    if (paper && paper.downloadLink) {
       const container = document.getElementById('pdfViewer');
       container.innerHTML = `<embed src="${paper.downloadLink}" type="application/pdf" width="100%" height="600px" />`;
     }
@@ -98,30 +132,63 @@ function PaperDetail() {
       </div>
       <div className="paper-detail">
         <h2>{paper.title}</h2>
-        <p><strong>Authors:</strong> {paper.authors.join(', ')}</p>
+        <div>
+          <p><strong>Authors:</strong> {paper.authors.map(author => (
+            <span key={author.authorId} onClick={() => handleAuthorClick(author)} style={{ cursor: 'pointer', color: 'blue' }}>
+              {author.name}
+            </span>
+          )).reduce((prev, curr) => [prev, ', ', curr])}</p>
+
+          
+        </div>
         <p><strong>Year:</strong> {paper.year}</p>
         <p><strong>Abstract:</strong> {paper.abstract}</p>
-        <p><strong>Citation Count:</strong> {paper.citationcount === 0 ? 'Not Available' : paper.citationcount}</p>
-        <p><strong>Publication Venue:</strong> {paper.pubvenue === "" ? 'Not Available' : paper.pubvenue}</p>
+        <p><strong>Citation Count:</strong> {paper.citationCount === 0 ? 'Not Available' : paper.citationCount}</p>
+        <p><strong>Publication Venue:</strong> {paper.publicationVenue === "" ? 'Not Available' : paper.publicationVenue}</p>
         <div className="paper-detail-buttons">
-          <button onClick={ViewPaper}>View Paper</button>
+          <button 
+          onClick={ViewPaper}
+          >
+          {paper.downloadLink ? (
+            <>
+              <FontAwesomeIcon icon={faDownload} /> Download Paper
+            </>
+          ) : (
+            <>
+              <FontAwesomeIcon icon={faTimesCircle} /> Paper Not Available
+            </>
+          )}
+          </button>
           <button onClick={bookmarkPaper}>Bookmark Paper</button>
           <button onClick={seeRelatedPapers}>See Related Papers</button>
         </div>
-        <div className="pdf-viewer"id="pdfViewer"></div>
+        {showPopup && (
+          <>
+            {/* Overlay that dims the background and can close the popup when clicked */}
+            <div className="popup-background" onClick={() => setShowPopup(false)}></div>
+
+            {/* Actual popup container */}
+            <div className="popup">
+              <div className="popup-inner">
+                {/* Popup content goes here */}
+                <AuthorPopup author={selectedAuthor} onClose={() => setShowPopup(false)} source={source} />
+              </div>
+            </div>
+          </>
+        )}
+        {showPDF && (<div className="pdf-viewer"id="pdfViewer"></div>)}
+        
         {showRecommendedPapers && (
         <div className="recommended-papers-container">
           <h3>Recommended Papers</h3>
           <div className="recommended-papers-list">
             {recommendedPapers.map((paper) => (
-              <div
-                key={paper.paperId}
-                className="recommended-paper"
-                onClick={() => navigate(`/paperdetail?paperid=${paper.paperId}`)}
-                style={{ cursor: 'pointer' }}
-              >
-                <p>{paper.title}</p>
-              </div>
+              <Link 
+              to={`/PaperDetail?paperid=${paper.paperId}&source=${source}`} 
+              className="recommended-paper"
+            >
+              {paper.title}
+            </Link>
               ))}
             </div>
           </div>
