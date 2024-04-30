@@ -1,95 +1,129 @@
 import React, { useState, useEffect } from 'react';
 import './Experience.css';
-
-const defaultExperience = {
-  company: '',
-  title: '',
-  responsibilities: '',
-  start_date: '',
-  end_date: '',
-  location: '',
-  is_current: false,
-  isEditing: true,  // New entries should be editable by default
-};
+import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 function Experience() {
   const [experiences, setExperiences] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const { authState } = useAuth();
+  const navigate = useNavigate();
+
+  const defaultExperience = {
+    id: null,
+    company: '',
+    title: '',
+    responsibilities: '',
+    start_date: '',
+    end_date: '',
+    location: '',
+    is_current: false,
+    isEditing: true,
+  };
 
   useEffect(() => {
-    // Initially fetch the experiences from the backend
-    fetchExperiences();
-  }, []);
+    if (!authState.user) {
+      navigate('/signin');
+    } else {
+      fetchExperiences();
+    }
+  }, [authState.user, navigate]);
 
   const fetchExperiences = async () => {
+    setLoading(true);
     try {
-      const response = await fetch('http://localhost:8000/api/experiences/', {
+      const response = await fetch(`http://localhost:8000/IntelliQuest_v1/myprofile/experience/${authState.user}/`, {
+        method: 'GET',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,  // Assume token is stored in localStorage
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          // 'Authorization': `Bearer ${authState.tokens.access}`,
         },
       });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.message || 'Failed to fetch experiences');
-      setExperiences(data.map(item => ({ ...item, isEditing: false })));
-    } catch (error) {
-      console.error('Fetch experiences error:', error);
+      if (!response.ok) {
+        const errorData = await response.json();
+        setError(errorData.message || 'Unable to fetch experience data');
+      } else {
+        const data = await response.json();
+        setExperiences(data.map((exp) => ({ ...exp, isEditing: false })));
+      }
+    } catch (err) {
+      setError('There was an error loading your work experience information.');
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleExperienceChange = (index, event) => {
     const { name, value, type, checked } = event.target;
-    setExperiences(experiences => experiences.map((exp, i) =>
+    setExperiences((prev) => prev.map((exp, i) =>
       i === index ? { ...exp, [name]: type === 'checkbox' ? checked : value } : exp
     ));
   };
 
-  const addExperience = () => {
-    setExperiences(experiences => [...experiences, { ...defaultExperience }]);
-  };
-
-  const removeExperience = async (index) => {
-    const experience = experiences[index];
-    if (experience.id) {
-      try {
-        const response = await fetch(`http://localhost:8000/api/experiences/${experience.id}/`, {
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          },
-        });
-        if (!response.ok) throw new Error('Failed to delete experience');
-      } catch (error) {
-        console.error('Delete experience error:', error);
-        return;
-      }
-    }
-    setExperiences(experiences => experiences.filter((_, i) => i !== index));
-  };
-
   const saveExperience = async (index) => {
     const experience = experiences[index];
-    const url = experience.id ? `http://localhost:8000/api/experiences/${experience.id}/` : 'http://localhost:8000/api/experiences/';
+    const userEmail = encodeURIComponent(authState.user); // URL encode the email
+    const url = experience.id ? `http://localhost:8000/IntelliQuest_v1/myprofile/experience/${userEmail}/${experience.id}/` : `http://localhost:8000/IntelliQuest_v1/myprofile/experience/${userEmail}/`;
     const method = experience.id ? 'PUT' : 'POST';
 
     try {
       const response = await fetch(url, {
         method,
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          // 'Authorization': `Bearer ${authState.tokens.access}`,
         },
-        body: JSON.stringify(experience),
+        body: JSON.stringify({
+          ...experience,
+          start_date: experience.start_date,
+          end_date: experience.is_current ? null : experience.end_date,
+        }),
       });
-      if (!response.ok) throw new Error('Failed to save experience');
-      const updatedExperience = await response.json();
+      if (!response.ok) throw new Error('Failed to save the experience');
 
-      setExperiences(experiences => experiences.map((exp, i) =>
-        i === index ? { ...exp, ...updatedExperience, isEditing: false } : exp
+      const savedExperience = await response.json();
+      setExperiences((prev) => prev.map((exp, i) =>
+        i === index ? { ...exp, ...savedExperience, isEditing: false } : exp
       ));
-    } catch (error) {
-      console.error('Save experience error:', error);
+    } catch (err) {
+      setError(err.message);
     }
   };
+
+  const addExperience = () => {
+    setExperiences([...experiences, { ...defaultExperience }]);
+  };
+
+  const removeExperience = async (index) => {
+    const experience = experiences[index];
+    if (!experience.id) {
+      setExperiences((prev) => prev.filter((_, i) => i !== index));
+      return;
+    }
+    const url = `http://localhost:8000/IntelliQuest_v1/myprofile/experience/${authState.user}/${experience.id}`;
+    try {
+      const response = await fetch(url, {
+        method: 'DELETE',
+        headers: {
+          // 'Authorization': `Bearer ${authState.tokens.access}`,
+        },
+      });
+      if (!response.ok) throw new Error('Failed to delete the experience');
+      setExperiences((prev) => prev.filter((_, i) => i !== index));
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const toggleEditing = (index) => {
+    setExperiences((prev) => prev.map((exp, i) =>
+      i === index ? { ...exp, isEditing: !exp.isEditing } : exp
+    ));
+  };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
     <div className="experience-container">
@@ -97,30 +131,30 @@ function Experience() {
       {experiences.map((experience, index) => (
         <div key={index} className="experience-entry">
           {experience.isEditing ? (
-            <form onSubmit={e => { e.preventDefault(); saveExperience(index); }}>
-              <input type="text" name="company" placeholder="Company" value={experience.company} onChange={e => handleExperienceChange(index, e)} />
-              <input type="text" name="title" placeholder="Job Title" value={experience.title} onChange={e => handleExperienceChange(index, e)} />
-              <textarea name="responsibilities" placeholder="Responsibilities" value={experience.responsibilities} onChange={e => handleExperienceChange(index, e)} />
-              <input type="date" name="start_date" value={experience.start_date} onChange={e => handleExperienceChange(index, e)} />
-              <input type="date" name="end_date" value={experience.end_date} disabled={experience.is_current} onChange={e => handleExperienceChange(index, e)} />
-              <input type="text" name="location" placeholder="Location" value={experience.location} onChange={e => handleExperienceChange(index, e)} />
+            <div>
+              <input type="text" name="company" placeholder="Company" value={experience.company} onChange={(e) => handleExperienceChange(index, e)} />
+              <input type="text" name="title" placeholder="Job Title" value={experience.title} onChange={(e) => handleExperienceChange(index, e)} />
+              <textarea name="responsibilities" placeholder="Responsibilities" value={experience.responsibilities} onChange={(e) => handleExperienceChange(index, e)} />
+              <input type="date" name="start_date" value={experience.start_date} onChange={(e) => handleExperienceChange(index, e)} />
+              <input type="date" name="end_date" value={experience.end_date} disabled={experience.is_current} onChange={(e) => handleExperienceChange(index, e)} />
+              <input type="text" name="location" placeholder="Location" value={experience.location} onChange={(e) => handleExperienceChange(index, e)} />
               <label>
-                <input type="checkbox" name="is_current" checked={experience.is_current} onChange={e => handleExperienceChange(index, e)} /> Current Job
+                <input type="checkbox" name="is_current" checked={experience.is_current} onChange={(e) => handleExperienceChange(index, e)} /> Current Job
               </label>
-              <button type="submit" className="save-btn">Save</button>
-              <button type="button" onClick={() => removeExperience(index)} className="cancel-btn">Remove</button>
-            </form>
+              <button onClick={() => saveExperience(index)} className="save-btn">Save</button>
+              <button onClick={() => toggleEditing(index)} className="cancel-btn">Cancel</button>
+            </div>
           ) : (
-            <>
+            <div>
               <div>Company: {experience.company}</div>
               <div>Job Title: {experience.title}</div>
               <div>Responsibilities: {experience.responsibilities}</div>
               <div>From: {experience.start_date}</div>
               <div>To: {experience.end_date || "Present"}</div>
               <div>Location: {experience.location}</div>
-              <button onClick={() => setExperiences(experiences => experiences.map((exp, i) => i === index ? { ...exp, isEditing: true } : exp))}>Edit</button>
+              <button onClick={() => toggleEditing(index)}>Edit</button>
               <button onClick={() => removeExperience(index)}>Remove</button>
-            </>
+            </div>
           )}
         </div>
       ))}
