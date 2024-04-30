@@ -28,7 +28,9 @@ urlpatterns = [
     path('myprofile/experience/<str:email>/', ExperienceView.as_view(), name='experience-list-create'),
     path('myprofile/experience/<str:email>/<int:exp_id>/', ExperienceView.as_view(), name='experience-update-delete'),
 
-    path('myprofile/publications/<str:email>/', PublicationsView.as_view(), name='user-profile-publications'),
+    path('myprofile/publications/<str:email>/', PublicationsView.as_view(), name='publications-list-create'),
+    path('myprofile/publications/<str:email>/<int:pub_id>/', ExperienceView.as_view(), name='publications-update-delete'),
+    
     
 
 
