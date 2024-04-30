@@ -261,8 +261,7 @@ body {
   font-size: 17px;
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
-  width: 50%;
-  max-width: 100px;
+  width: 34%;
   margin-top: 10px; /* Adds space between the year inputs and the author input */
 }
 
