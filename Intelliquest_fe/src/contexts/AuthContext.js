@@ -38,11 +38,12 @@ export const AuthProvider = ({ children }) => {
             const data = await response.json();
             console.log(data);
             setAuthState({
-                user:  data.email // store only the email address
-                ,
-                tokens: data.access // assuming data.tokens contains the necessary token information
+                user: data.email, // this should be the email from the response
+                tokens: {
+                    access: data.access, // the access token
+                    refresh: data.refresh // the refresh token
+                }
             });
-            ;
         } catch (error) {
             console.error('Login failed:', error);
             throw error;
