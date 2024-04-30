@@ -79,13 +79,13 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 60%;
+  width: 100%;
 }
 
 .search-container form,
 .search-container input[type="text"],
 .search-button {
-  max-width: 500px; /* Controls the maximum width */
+  max-width: 350px; /* Controls the maximum width */
 }
 
 .search-input {
@@ -94,7 +94,8 @@ body {
   padding: 10px;
   font-size: 17px;
   border: 1px solid var(--border-color);
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius) 0 0 var(--border-radius);
+  width: 100%
 }
 
 .search-sort-container {
@@ -102,24 +103,24 @@ body {
   justify-content: center;
   align-items: center;
   margin-bottom: 20px;
-  gap: 10px; /* Adjust the space between buttons */
+  width: 100%;
+  /* Adjust the space between buttons */
 }
 
 /* Sorting */
 .sort-button {
-  padding: 10px 15px;
-  font-size: 17px;
-  background-color: var(--primary-color);
-  color: var(--text-color-white);
+  background: none;
+  color: var(--text-color);
   border: none;
-  border-radius: var(--border-radius);
   cursor: pointer;
-  margin-left: 10px; /* Space between search button and sort button */
-  transition: background-color 0.3s ease;
+  text-decoration: underline;
+  padding: 10px;
+  font-size: 17px;
 }
 
 .sort-button:hover {
-  background-color: var(--button-background-color-hover);
+  color: var(--button-background-color-hover);
+  text-decoration: none;
 }
 
 .sorting-options {
@@ -141,8 +142,8 @@ body {
   font-size: 17px;
   background-color: var(--primary-color);
   color: var(--text-color-white);
-  border: none;
-  border-radius: var(--border-radius);
+  border: 1px solid var(--primary-color);
+  border-radius: 0 var(--border-radius) var(--border-radius) 0;
   cursor: pointer;
   transition: background-color 0.3s ease; /* Smooth transition for hover effect */
 }
@@ -189,7 +190,9 @@ body {
 /* Responsive adjustments */
 @media (max-width: 600px) {
   .header-right {
-      position: static; /* Adjust position for smaller screens */
+      position: relative;
+      display: inline-block;
+      /* position: static; Adjust position for smaller screens */
       margin: 20px 0;
       justify-content: center;
   }
@@ -215,7 +218,7 @@ body {
 .advanced-search-button {
   padding: 8px 12px; /* Slightly smaller than the search button for distinction */
   font-size: 16px; /* Adjusted for visual hierarchy */
-  background-color: var(--button-background-color-hover); /* Different color for differentiation */
+  background-color: var(--primary-color); /* Different color for differentiation */
   color: var(--text-color-white);
   border: none;
   border-radius: var(--border-radius);
@@ -258,8 +261,7 @@ body {
   font-size: 17px;
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
-  width: 50%;
-  max-width: 100px;
+  width: 34%;
   margin-top: 10px; /* Adds space between the year inputs and the author input */
 }
 
@@ -299,4 +301,59 @@ background-color: var(--background-light);
 border: 1px solid var(--border-color);
 border-radius: var(--border-radius);
 cursor: pointer;
+}
+
+.recent-searches h3{
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center align the items horizontally */
+  justify-content: center; /* Center align the items vertically */
+  width: 100%;
+}
+
+.dropdown {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  right: 0;
+  top: 100%;
+}
+
+.dropdown button {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+  border: none;
+  background: none;
+  width: 100%;
+  box-sizing: border-box; /* Adds padding and border to the element's total width and height */
+}
+
+.dropdown button:hover {
+  background-color: #f1f1f1;
+}
+
+.user-button img {
+  width: 30px; /* Adjust size as necessary */
+  height: 30px; /* Adjust size as necessary */
+  border-radius: 50%; /* Makes the image round */
+}
+
+.user-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+}
+
+/* CSS to display the dropdown when user clicks on the button */
+.header-right:hover .dropdown {
+  display: block;
+
 }

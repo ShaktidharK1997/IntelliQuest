@@ -5,8 +5,8 @@
   --border-radius: 5px;
   --background-light: #f9f9f9;
   --shadow-color: rgba(0, 0, 0, 0.1);
-  --text-color: #333; /* Generalized text color variable */
-  --text-color-light: #666; /* Lighter text color for less emphasis */
+  --text-color: #333;
+  --text-color-light: #666;
   --text-color-white: #fff;
   --input-border-color-focus: rgba(204, 204, 204, 0.75);
   --button-background-color-hover: #0056b3;
@@ -18,7 +18,7 @@
   color: var(--text-color);
   padding: 20px;
   margin: auto;
-  max-width: 800px; /* Adjust based on your content width preference */
+  max-width: 800px;
   box-shadow: var(--shadow-color) 0 4px 8px;
   border-radius: var(--border-radius);
 }
@@ -30,40 +30,35 @@
   margin-top: 20px;
 }
 
-.paper-detail h2 {
+.paper-detail h2,
+.paper-detail p strong {
   color: var(--text-color);
-  font-size: 24px; /* Adjust the font size as needed */
 }
 
 .paper-detail p {
   color: var(--text-color-light);
-  font-size: 16px; /* Adjust the font size as needed */
   margin: 10px 0;
-}
-
-.paper-detail p strong {
-  color: var(--text-color);
 }
 
 .paper-detail a {
   color: var(--primary-color);
   text-decoration: none;
-  transition: color 0.3s ease;
 }
 
 .paper-detail a:hover,
-.paper-detail a:focus {
+.paper-detail a:focus,
+.paper-detail-buttons:hover,
+.paper-detail-buttons:focus {
   color: var(--button-background-color-hover);
+  outline: none;
 }
 
-/* Adjustments for smaller screens */
 @media (max-width: 600px) {
   .paper-detail-container {
     margin: 20px;
     max-width: 100%;
   }
 }
-
 
 .paper-detail-buttons {
   padding: 10px 15px;
@@ -73,25 +68,19 @@
   border: none;
   border-radius: var(--border-radius);
   cursor: pointer;
-  transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+  transition: background-color 0.3s ease;
 }
 
-.paper-detail-buttons:hover,
-.paper-detail-buttons:focus {
-  background-color: var(--button-background-color-hover);
-  outline: none;
-}
-
-.paper-detail-buttons:focus {
-  border-color: var(--input-border-color-focus);
-  outline: none;
+.recommended-papers-container,
+.recommended-papers-list,
+.recommended-paper {
+  background-color: var(--text-color-white);
+  border-radius: var(--border-radius);
 }
 
 .recommended-papers-container {
   margin-top: 30px;
   padding: 20px;
-  background-color: var(--background-light);
-  border-radius: var(--border-radius);
   box-shadow: var(--shadow-color) 0px 2px 4px;
 }
 
@@ -105,13 +94,13 @@
 .recommended-paper {
   width: 100%;
   padding: 10px 15px;
-  margin: 10px 0;
-  background-color: var(--text-color-white);
-  color: var(--text-color);
+  margin: 15px 0;
   border: 1px solid var(--border-color);
-  border-radius: var(--border-radius);
   box-shadow: var(--shadow-color) 0px 1px 3px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: block;
+  box-sizing: border-box;
+  text-decoration: none;
 }
 
 .recommended-paper:hover,
@@ -121,15 +110,44 @@
   cursor: pointer;
 }
 
-.recommended-paper p {
-  margin: 0; /* Resetting default paragraph margins for alignment */
-  color: var(--primary-color); /* Make title color stand out */
-  font-weight: bold; /* Optional: makes the paper titles bolder */
+.pdf-viewer {
+  width: 100%;
+  height: 90vh;
+  border: 1px solid #ccc;
+  margin-top: 20px;
 }
 
-.pdf-viewer {
-  width: 100%;        /* Full width */
-  height: 90vh;       /* 90% of the viewport height */
-  border: 1px solid #ccc; /* Optional: adds a border around the PDF viewer */
-  margin-top: 20px;   /* Optional: adds space above the viewer */
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  max-width: 1000px;
+  min-height: 400px;
+  max-height: 90vh;
+  background: var(--text-color-white);
+  padding: 20px;
+  box-shadow: 0 2px 10px var(--shadow-color);
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+.popup-inner ul {
+  list-style: none;
+  padding: 0;
+}
+
+.popup-inner ul li {
+  margin-bottom: 10px;
+}
+
+.popup-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
 }
