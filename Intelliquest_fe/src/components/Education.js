@@ -1,107 +1,157 @@
 import React, { useState, useEffect } from 'react';
-import './Education.css'; // Ensure you have created this CSS file for styling.
-
-const defaultEducation = {
-  id: null, // Include id for tracking and updating existing records
-  university: '',
-  degree: '',
-  major: '',
-  from: '',
-  to: '',
-  location: '',
-  gpa: '',
-  isEditing: true, // New entries should be editable by default
-};
+import './Education.css';
+import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 function Education() {
   const [educations, setEducations] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const { authState } = useAuth();
+  const navigate = useNavigate();
+
+  const defaultEducation = {
+    id: null,
+    university: '',
+    degree: '',
+    course: '',
+    start_date: '',
+    end_date: '',
+    location: '',
+    gpa: '',
+    isEditing: true,
+  };
 
   useEffect(() => {
-    // Fetch education records from the backend when the component mounts
-    fetchEducations();
-  }, []);
+    if (!authState.user) {
+      navigate('/signin');
+    } else {
+      fetchEducations();
+    }
+  }, [authState.user, navigate]);
 
   const fetchEducations = async () => {
+    setLoading(true);
     try {
-      const response = await fetch('http://localhost:8000/api/educations/', {
+      const response = await fetch(`http://localhost:8000/IntelliQuest_v1/myprofile/education/${authState.user}/`, {
+        method: 'GET',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          // 'Authorization': `Bearer ${authState.tokens.access}`,
           'Content-Type': 'application/json',
         },
       });
-      const data = await response.json();
       if (!response.ok) {
-        throw new Error('Failed to fetch educations');
+        const errorData = await response.json();
+        setError(errorData.message || 'Unable to fetch education data');
+      } else {
+        const data = await response.json();
+        setEducations(data.map((edu) => ({ ...edu, isEditing: false })));
       }
-      setEducations(data.map(edu => ({ ...edu, isEditing: false })));
-    } catch (error) {
-      console.error('Fetch educations error:', error.message);
+    } catch (e) {
+      setError('There was an error loading your education information.');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleEducationChange = (index, event) => {
-    const { name, value } = event.target;
-    setEducations(educations => educations.map((edu, i) => 
-      i === index ? { ...edu, [name]: value } : edu
-    ));
-  };
+  // All your other functions: handleEducationChange, addEducation, removeEducation, saveEducation, toggleEditing
+//... (previous code)
 
-  const addEducation = () => {
-    setEducations(educations => [...educations, { ...defaultEducation }]);
-  };
+const handleEducationChange = (index, event) => {
+  const { name, value } = event.target;
+  setEducations((prevEducations) => prevEducations.map((edu, i) => 
+    i === index ? { ...edu, [name]: value } : edu
+  ));
+};
 
-  const removeEducation = async (index) => {
-    const education = educations[index];
-    if (education.id) {
-      try {
-        const response = await fetch(`http://localhost:8000/api/educations/${education.id}/`, {
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          },
-        });
-        if (!response.ok) {
-          throw new Error('Failed to delete education');
-        }
-      } catch (error) {
-        console.error('Delete education error:', error.message);
-        return; // Exit if the delete operation fails
-      }
-    }
-    setEducations(educations => educations.filter((_, i) => i !== index));
-  };
+const addEducation = () => {
+  setEducations((prevEducations) => [...prevEducations, { ...defaultEducation }]);
+};
 
-  const saveEducation = async (index) => {
-    const education = educations[index];
-    const url = education.id ? `http://localhost:8000/api/educations/${education.id}/` : 'http://localhost:8000/api/educations/';
-    const method = education.id ? 'PUT' : 'POST';
+const removeEducation = async (index) => {
+  const education = educations[index];
+  const userEmail = encodeURIComponent(authState.user); // URL encode the email
 
+  if (education.id) {
+    const url = `http://localhost:8000/IntelliQuest_v1/myprofile/education/${userEmail}/${education.id}/`;
     try {
       const response = await fetch(url, {
-        method: method,
+        method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          'Content-Type': 'application/json',
+          // 'Authorization': `Bearer ${authState.tokens.access}`,
         },
-        body: JSON.stringify(education),
       });
-      if (!response.ok) {
-        throw new Error('Failed to save education');
-      }
-      const savedEducation = await response.json();
-      setEducations(educations => educations.map((edu, i) => 
-        i === index ? { ...edu, ...savedEducation, isEditing: false } : edu
-      ));
-    } catch (error) {
-      console.error('Save education error:', error.message);
-    }
-  };
 
-  const toggleEditing = (index) => {
-    setEducations(educations => educations.map((edu, i) => 
-      i === index ? { ...edu, isEditing: !edu.isEditing } : edu
+      if (!response.ok) {
+        throw new Error('Failed to delete education');
+      }
+
+      setEducations((prevEducations) => prevEducations.filter((_, i) => i !== index));
+    } catch (error) {
+      setError(error.message);
+    }
+  } else {
+    setEducations((prevEducations) => prevEducations.filter((_, i) => i !== index));
+  }
+};
+
+const saveEducation = async (index) => {
+  const education = educations[index];
+  const userEmail = authState.user; // URL encode the email to safely include it in the URL
+
+  const baseEndpoint = `http://localhost:8000/IntelliQuest_v1/myprofile/education/${userEmail}/`;
+  const url = education.id ? `${baseEndpoint}${education.id}/` : baseEndpoint;
+  const method = education.id ? 'PUT' : 'POST';
+
+  try {
+    const bodyData = {
+      ...education,
+      start_date: education.start_date ? new Date(education.start_date).toISOString().split('T')[0] : null,
+      end_date: education.end_date ? new Date(education.end_date).toISOString().split('T')[0] : null,
+    };
+
+    if (method === 'POST') {
+      delete bodyData.id; // Remove id for POST request
+    }
+    
+    const response = await fetch(url, {
+      method: method,
+      headers: {
+        // 'Authorization': `Bearer ${authState.tokens.access}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(bodyData),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to save education');
+    }
+
+    const savedEducation = await response.json();
+    setEducations((prevEducations) => prevEducations.map((edu, i) => 
+      i === index ? { ...edu, ...savedEducation, isEditing: false } : edu
     ));
-  };
+  } catch (error) {
+    setError(error.message);
+  }
+};
+
+
+const toggleEditing = (index) => {
+  setEducations((prevEducations) => prevEducations.map((edu, i) => 
+    i === index ? { ...edu, isEditing: !edu.isEditing } : edu
+  ));
+};
+
+// ... (rest of the component)
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <div className="education-container">
@@ -112,9 +162,9 @@ function Education() {
             <form onSubmit={(e) => { e.preventDefault(); saveEducation(index); }}>
               <input type="text" name="university" placeholder="University" value={education.university} onChange={(e) => handleEducationChange(index, e)} />
               <input type="text" name="degree" placeholder="Degree" value={education.degree} onChange={(e) => handleEducationChange(index, e)} />
-              <input type="text" name="major" placeholder="Major" value={education.major} onChange={(e) => handleEducationChange(index, e)} />
-              <input type="date" name="from" value={education.from} onChange={(e) => handleEducationChange(index, e)} />
-              <input type="date" name="to" value={education.to} onChange={(e) => handleEducationChange(index, e)} />
+              <input type="text" name="course" placeholder="Course" value={education.course} onChange={(e) => handleEducationChange(index, e)} />
+              <input type="date" name="start_date" value={education.start_date} onChange={(e) => handleEducationChange(index, e)} />
+              <input type="date" name="end_date" value={education.end_date} onChange={(e) => handleEducationChange(index, e)} />
               <input type="text" name="location" placeholder="Location" value={education.location} onChange={(e) => handleEducationChange(index, e)} />
               <input type="text" name="gpa" placeholder="GPA" value={education.gpa} onChange={(e) => handleEducationChange(index, e)} />
               <button type="submit" className="save-btn">Save</button>
@@ -124,9 +174,9 @@ function Education() {
             <>
               <div>University: {education.university}</div>
               <div>Degree: {education.degree}</div>
-              <div>Major: {education.major}</div>
-              <div>From: {education.from}</div>
-              <div>To: {education.to || "Present"}</div>
+              <div>Course: {education.course}</div>
+              <div>From: {education.start_date}</div>
+              <div>To: {education.end_date}</div>
               <div>Location: {education.location}</div>
               <div>GPA: {education.gpa}</div>
               <button onClick={() => toggleEditing(index)}>Edit</button>
