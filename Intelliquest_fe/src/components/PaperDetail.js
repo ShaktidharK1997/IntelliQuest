@@ -20,7 +20,7 @@ function PaperDetail() {
   const [showPopup, setShowPopup] = useState(false);
   const [selectedAuthor, setSelectedAuthor] = useState({});
 
-  const [currentUser] = authState.user;
+  //const [currentUser] = authState.user;
   const paperId = new URLSearchParams(location.search).get('paperid');
   const source = new URLSearchParams(location.search).get('source');
 
