@@ -1,33 +1,30 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 //import { GoogleLogin } from 'react-google-login';
+import Logo from '../center_logo.svg';
 import './SignUpPage.css'; // Ensure you import the CSS stylesheet
 
 function SignUpPage() {
+  const [fullName, setFirstName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(''); // Add an error state
   let navigate = useNavigate();
 
-  const isValidEmail = (email) => {
-    return /\S+@\S+\.\S+/.test(email); // Simple regex for email validation
-  };
-
-  const isValidPassword = (password) => {
-    return password.length >= 8; // Checks if password is at least 8 characters
-  };
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-    setError(''); // Reset error message
+    if (!fullName) {
+      setError('Please enter your full name.');
+      return;
+    }
 
-    // Static checks for email and password validity
-    if (!isValidEmail(email)) {
+    if (!/\S+@\S+\.\S+/.test(email)) {
       setError('Please enter a valid email address.');
       return;
     }
 
-    if (!isValidPassword(password)) {
+    if (password.length < 8) {
       setError('Password must be at least 8 characters long.');
       return;
     }
@@ -45,11 +42,9 @@ function SignUpPage() {
         console.log('Signing up:', email, password);
         navigate('/signin'); // Navigate to sign-in page on success
       } else {
-        console.error('Failed to sign up');
         setError('Failed to sign up. Please try again.');
       }
     } catch (error) {
-      console.error('Error during sign up:', error);
       setError('An error occurred during sign up. Please try again.');
     }
   };
@@ -61,7 +56,20 @@ function SignUpPage() {
 
   return (
     <div className="signup-container">
+      <div className="signin-header">
+        <img src={Logo} alt="IntelliQuestLogo" className="signin-logo" />
+        <h1>IntelliQuest</h1>
+      </div>
       <form onSubmit={handleSignUp} className="signup-form">
+        <h2>Create Your Account</h2>
+        <input
+          type="text"
+          value={fullName}
+          onChange={(e) => setFirstName(e.target.value)}
+          placeholder="Full Name"
+          required
+          className="signup-input"
+        />
         <input
           type="email"
           value={email}
@@ -79,10 +87,11 @@ function SignUpPage() {
           className="signup-input"
         />
         <p className="password-instructions">
-          Password must be at least 8 characters long and should not be too common.
+          Note: Password must be at least 8 characters long
         </p>
         {error && <div className="error-message">{error}</div>} {/* Display error message if any */}
         <button type="submit" className="signup-button">Sign Up</button>
+        <button onClick={() => navigate('/signin')} className="signup-back-button">Back to Login</button>
       </form>
 {/*       <GoogleLogin
         clientId="454933535483-apt2pd791htjnfdvdmt1mui3psskai96.apps.googleusercontent.com"
@@ -93,7 +102,7 @@ function SignUpPage() {
         className="google-login-button"
 
        /> */}
-      <button onClick={() => navigate('/signin')} className="signup-back-button">Back to Login</button>
+      
 
     </div>
   );
