@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-
-
-import './SignInPage.css'; // Make sure to import the CSS file
+import Logo from '../center_logo.svg'; 
+import './SignInPage.css'; // importing the CSS file
 
 function SignInPage() {
   const [email, setEmail] = useState('');
@@ -40,7 +39,12 @@ function SignInPage() {
 
   return (
     <div className="signin-container">
+      <div className="signin-header">
+        <img src={Logo} alt="IntelliQuest Logo" className="signin-logo" />
+        <h1>IntelliQuest</h1>
+      </div>
       <form onSubmit={handleSignIn} className="signin-form">
+        <h2>Login</h2>
         <input
           type="email"
           value={email}
@@ -55,7 +59,7 @@ function SignInPage() {
           placeholder="Password"
           required
         />
-        <p>Do not have an account? <button onClick={() => navigate('/signup')} className="link-button">Register an account.</button></p>
+        <p>Don't have an account? <button onClick={() => navigate('/signup')} className="link-button">Create an account.</button></p>
         <button type="submit" className="signin-button">Login</button>
         <button onClick={() => navigate('/')} className="signup-back-button">Back to Search Page</button>
       </form>
