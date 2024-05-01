@@ -1,21 +1,326 @@
-from django.shortcuts import render
-from django.http import JsonResponse
-from .models import Paper, PaperDetail , Author
-import requests 
+# Standard library imports
+import base64
+import logging
 import time
-from django_ratelimit.decorators import ratelimit
 import uuid
+from datetime import date
+
+# Third-party imports
+import requests
 from requests.exceptions import RequestException
+
+# Django imports
+from django.contrib.auth import authenticate, get_user_model, login
+from django.core.files.base import ContentFile
 from django.db import transaction
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, render
+from django_ratelimit.decorators import ratelimit
 
-from django.contrib.auth import authenticate
+# Django REST Framework imports
+from rest_framework import permissions, status
 from rest_framework.decorators import api_view
-from rest_framework import status
-
-from django.contrib.auth import get_user_model
+from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
 
-from django.contrib.auth import authenticate, login
+# Local imports
+from .authentication import EmailBackend, get_tokens_for_user
+from .models import CustomUser, Education, Experience, Paper, PaperDetail, PersonalProfile, Publications, Author
+from .serializers import EducationSerializer, ExperienceSerializer, ProfileSerializer, PublicationsSerializer, UserSerializer
+
+# Logger configuration
+logger = logging.getLogger(__name__)
+
+class CreateUserView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        logger.debug("Received request data: %s", request.data)
+        serializer = UserSerializer(data=request.data)
+
+        if serializer.is_valid():
+            try:
+                with transaction.atomic():
+                    user = serializer.save()
+                    tokens = get_tokens_for_user(user)
+                    logger.debug("User created with tokens: %s", tokens)
+
+                    # Create a PersonalProfile instance when a user is created
+                    PersonalProfile.objects.create(
+                        user=user,
+                        first_name=request.data.get('first_name', 'Not provided'),
+                        last_name=request.data.get('last_name', 'Not provided'),
+                        date_of_birth=request.data.get('date_of_birth', date.today()),  # Use current date as default
+                        contact=request.data.get('contact', '0000000000'),
+                        location=request.data.get('location', 'Unknown')
+                    )
+
+                    return Response({
+                        'access': tokens['access'],
+                        'refresh': tokens['refresh'],
+                        'user_id': user.pk,
+                        'email': user.email,
+                        'msg': 'User Created Successfully'
+                    }, status=status.HTTP_201_CREATED)
+
+            except Exception as e:
+                logger.error("Error creating user or profile: %s", e)
+                return Response({
+                    "errors": "Error creating user or profile",
+                    "msg": str(e)
+                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        else:
+            logger.error("Errors: %s", serializer.errors)
+            return Response({
+                "errors": serializer.errors,
+                "msg": "Error Creating User, check data provided"
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LoginView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        email = request.data.get('email')
+        password = request.data.get('password')
+        
+        logger.debug(f"Attempting to authenticate user {email}")
+        
+        auth_backend = EmailBackend()
+        user = auth_backend.authenticate(request, username=email, password=password)
+        
+        if user:
+            logger.info(f"User {email} authenticated successfully")
+            tokens = get_tokens_for_user(user)
+            
+            try:
+                profile = PersonalProfile.objects.get(user=user)
+                profile_data = ProfileSerializer(profile).data
+                education_data = EducationSerializer(profile.education.all(), many=True).data
+                experience_data = ExperienceSerializer(profile.experience.all(), many=True).data
+                publications_data = PublicationsSerializer(profile.publications.all(), many=True).data
+                logger.debug("Successfully retrieved all user profile related data.")
+            except PersonalProfile.DoesNotExist:
+                logger.error(f"Profile for user {email} not found.")
+                return Response({'error': 'Profile not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+            return Response({
+                'access': tokens['access'],
+                'refresh': tokens['refresh'],
+                'email': email,
+                'profile': profile_data,
+                'education': education_data,
+                'experience': experience_data,
+                'publications': publications_data
+            }, status=status.HTTP_200_OK)
+        else:
+            logger.warning(f"Authentication failed for user {email}")
+            return Response({'error': 'Invalid Credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class UserProfileView(APIView):
+    permission_classes = [AllowAny]
+    parser_classes = [JSONParser]  # Use JSONParser for regular PATCH requests
+
+    def get(self, request, email):
+        print("Request headers : ",request.headers)
+
+        user = get_object_or_404(CustomUser, email=email)
+        profile = get_object_or_404(PersonalProfile, user=user)
+        serializer = ProfileSerializer(profile)
+        return Response(serializer.data)
+
+    def patch(self, request, email):
+        logger.debug(f"Received headers: {request.headers}")
+
+        user = get_object_or_404(CustomUser, email=email)
+        profile = get_object_or_404(PersonalProfile, user=user)
+        serializer = ProfileSerializer(profile, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class UpdateProfilePictureView(APIView):
+    permission_classes = [AllowAny]
+    parser_classes = (MultiPartParser, FormParser)
+
+    def put(self, request, email):
+        logger.debug(f"Updating profile picture for email: {email}")
+        user = get_object_or_404(CustomUser, email=email)
+        profile = get_object_or_404(PersonalProfile, user=user)
+        
+        profile_picture = request.FILES.get('profile_picture')
+        if profile_picture:
+            profile.profile_picture.save(profile_picture.name, profile_picture, save=True)
+            logger.info(f"Profile picture updated for email: {email}")
+            return Response({'message': 'Profile picture updated successfully.'})
+        else:
+            logger.error("No profile picture provided for update.")
+            return Response({'error': 'No profile picture provided.'}, status=status.HTTP_400_BAD_REQUEST)
+
+class EducationView(APIView):
+    # Use the appropriate permission class
+    # For example, IsAuthenticated to ensure only authenticated users can access the view
+    permission_classes = [AllowAny]
+
+
+    def get(self, request, email):
+
+        user = get_object_or_404(CustomUser, email=email)
+        profile = get_object_or_404(PersonalProfile, user=user)
+
+        educations = Education.objects.filter(personal_info_id = profile.id)
+        serializer = EducationSerializer(educations, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, email):
+        # logger.debug(f"Request data: {request.data}")
+        user = get_object_or_404(CustomUser, email=email)
+        profile = get_object_or_404(PersonalProfile, user=user)
+        request.data['personal_info'] = profile.id
+
+        serializer = EducationSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            logger.debug("Education record created successfully.")
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            logger.error(f"Failed to create education record: {serializer.errors}")
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, email, edu_id):
+        user = get_object_or_404(CustomUser, email=email)
+        profile = get_object_or_404(PersonalProfile, user=user)
+        request.data['personal_info'] = profile.id
+        education = get_object_or_404(Education, id=edu_id, personal_info_id=profile.id)
+
+        serializer = EducationSerializer(education, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            logger.debug("Education record updated successfully.")
+            return Response(serializer.data)
+        else:
+            logger.error(f"Failed to update education record: {serializer.errors}")
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, email, edu_id):
+        user = get_object_or_404(CustomUser, email=email)
+        profile = get_object_or_404(PersonalProfile, user=user)
+
+        education = get_object_or_404(Education,id =edu_id, personal_info_id=profile.id)
+
+        education.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ExperienceView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, email):
+
+        user = get_object_or_404(CustomUser, email=email)
+        profile = get_object_or_404(PersonalProfile, user=user)
+
+        experiences = Experience.objects.filter(personal_info_id = profile.id)
+        serializer = ExperienceSerializer(experiences, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, email):
+        user = get_object_or_404(CustomUser, email=email)
+        profile = get_object_or_404(PersonalProfile, user=user)
+        request.data['personal_info'] = profile.id
+
+        logger.debug(f"Request data : {request.data}")
+
+        serializer = ExperienceSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            logger.debug("Experience record created successfully.")
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            logger.error(f"Failed to create experience record: {serializer.errors}")
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+ 
+    def put(self, request, email, exp_id):
+        user = get_object_or_404(CustomUser, email=email)
+        profile = get_object_or_404(PersonalProfile, user=user)
+        request.data['personal_info'] = profile.id
+        experience = get_object_or_404(Experience, id=exp_id, personal_info_id=profile.id)
+
+        serializer = ExperienceSerializer(experience, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            logger.debug("Experience record updated successfully.")
+            return Response(serializer.data)
+        else:
+            logger.error(f"Failed to update experience record: {serializer.errors}")
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, email, exp_id):
+        user = get_object_or_404(CustomUser, email=email)
+        profile = get_object_or_404(PersonalProfile, user=user)
+
+        experience = get_object_or_404(Experience,id =exp_id, personal_info_id=profile.id)
+        logger.debug(f"Data to delete : {experience}")
+        experience.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class PublicationsView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, email):
+        logger.debug(f"Fetching publication records for user with email: {email}")
+        user = get_object_or_404(CustomUser, email=email)
+        profile = get_object_or_404(PersonalProfile, user=user)
+        publications = Publications.objects.filter(personal_info_id=profile.id)
+        serializer = PublicationsSerializer(publications, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, email):
+        logger.debug(f"Creating new publication record for user with email: {email}")
+        user = get_object_or_404(CustomUser, email=email)
+        profile = get_object_or_404(PersonalProfile, user=user)
+        
+        # Since the client doesn't handle profile IDs, automatically attach the profile ID to the data
+        request.data['personal_info'] = profile.id
+        serializer = PublicationsSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            logger.info(f"Publication record created for user with email: {email}")
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            logger.error(f"Validation errors: {serializer.errors}")
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, email, pub_id):
+        logger.debug(f"Updating publication record for user with email: {email}")
+        user = get_object_or_404(CustomUser, email=email)
+        profile = get_object_or_404(PersonalProfile, user=user)
+        publication = get_object_or_404(Publications, id=pub_id, personal_info_id=profile.id)
+        request.data['personal_info'] = profile.id
+        serializer = PublicationsSerializer(publication, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            logger.error(f"Failed to update publication record: {serializer.errors}")
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, email, pub_id):
+        logger.debug(f"Deleting publication record for user with email: {email}")
+        user = get_object_or_404(CustomUser, email=email)
+        publication = get_object_or_404(Publications, id=pub_id, personal_profile__user=user)
+        
+        publication.delete()
+        logger.info(f"Publication record deleted for user with email: {email}")
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
 
 SEMANTIC_SCHOLAR_API_KEY = '8kxH5DVIYTaE4X2naV3l83RYdf0bYxg7DSFdd7U3'
 
@@ -233,35 +538,3 @@ def search_articles(request):
 
     return JsonResponse({'results': results})
 
-
-
-# Login page
-@api_view(['POST'])
-def sign_in(request):
-    email = request.data.get('email')
-    password = request.data.get('password')
-    user = authenticate(request, username=email, password=password)
-    if user is not None:
-        login(request, user)
-        return Response({"message": "Sign in successful"}, status=status.HTTP_200_OK)
-    else:
-        return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
-    
-# Sign up page
-@api_view(['POST'])
-def sign_up(request):
-    User = get_user_model()
-    email = request.data.get('email')
-    password = request.data.get('password')
-    if not User.objects.filter(username=email).exists():
-        user = User.objects.create_user(username=email, email=email, password=password)
-        # If you have additional fields, set them here before calling save()
-        user.save()
-        return Response({"message": "Sign up successful"}, status=status.HTTP_201_CREATED)
-    else:
-        return Response({"error": "User with this email already exists"}, status=status.HTTP_400_BAD_REQUEST)
-    
-"""     
-@api_view(['GET'])
-def get_author_data(request):
-     """

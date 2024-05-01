@@ -36,3 +36,20 @@
     transform: rotate(360deg);
   }
 }
+/* This is the added part after merge */
+
+/* Resets the padding and margin for all elements within the app */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Main app container styling */
+.Profile {
+  padding-top: 60px; /* Offset for the fixed header, adjust if header height changes */
+  min-height: 100vh; /* Ensure it covers the full viewport height */
+  background-color: #f0f0f0; /* Light grey background, provides contrast to components */
+}
+
+/* Additional global styles can be added as needed */

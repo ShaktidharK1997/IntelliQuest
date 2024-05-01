@@ -1,0 +1,79 @@
+/* Resets the padding, margin, and box-sizing for all elements */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* General styling for the fixed header */
+  .head {
+    position: fixed;
+    top: 0;
+    left: 0; /* Ensures the header extends across the full width */
+    width: 100%;
+    height: 60px; /* Fixed height for uniformity */
+    background-color: #282c34;
+    color: #fff; /* Ensures text is visible against dark background */
+    padding: 10px 20px; /* Provides internal spacing */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3); /* Adds subtle depth with a shadow */
+    z-index: 100; /* Keeps the header above other content */
+  }
+  
+  /* Styling for the sidebar to start below the header and occupy the remaining height */
+  .sidebar {
+    position: sticky;
+    top: 60px; /* Should match the header's height */
+    width: 250px; /* Consistent width for the sidebar */
+    height: calc(100vh - 60px); /* Adjusts height to fill space below the header */
+    background-color: #f4f4f4; /* Light background for the sidebar */
+    box-shadow: 4px 0 6px -1px rgba(0,0,0,0.1); /* Subtle shadow to the right */
+    padding: 1rem; /* Padding around sidebar content */
+    overflow-y: auto; /* Allows scrolling within the sidebar */
+  }
+  
+  /* Ensures main content area accounts for fixed header and sidebar */
+  .content {
+    margin-left: 250px; /* Offset by the sidebar width */
+    margin-top: 60px; /* Offset by the header height */
+    padding: 20px; /* Padding inside content area */
+    height: calc(100vh - 60px); /* Height adjusted to be visible area below header */
+    overflow-y: auto; /* Scrollable content */
+  }
+  
+  /* Adjusts the .App container to flow under the fixed header correctly */
+  .App {
+    padding-top: 60px; /* Ensures content does not hide under the header */
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 200px; /* Narrower sidebar on smaller screens */
+      top: 60px; /* Ensures it starts below the header */
+    }
+    .content {
+      margin-left: 200px; /* Adjusts for narrower sidebar */
+    }
+    .header {
+      padding: 10px 15px; /* Slightly smaller padding */
+    }
+  }
+  
+  /* Further responsive handling for very small screens */
+  @media (max-width: 480px) {
+    .sidebar {
+      width: 100%; /* Full-width sidebar */
+      position: relative; /* Stops sticking */
+      height: auto; /* Natural flow */
+    }
+    .content {
+      margin-left: 0; /* Content flows naturally */
+      margin-top: 0;
+      padding: 10px; /* Smaller padding */
+      height: auto; /* Natural height */
+    }
+    .header {
+      height: 50px; /* Smaller header on small screens */
+    }
+  }
+  

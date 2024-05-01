@@ -1,0 +1,101 @@
+.personal-info {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1rem;
+  background: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.personal-info h1 {
+  font-size: 1.8rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.profile-pic {
+  margin-bottom: 20px;
+}
+
+.profile-preview {
+  width: 100px; /* Adjust as necessary */
+  height: 100px; /* Adjust as necessary */
+  object-fit: cover;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
+input[type="file"] {
+  border: 1px solid #ccc;
+  display: block;
+  padding: 6px 12px;
+}
+
+.personal-info .form-group {
+  margin-bottom: 1rem;
+}
+
+.personal-info label {
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.personal-info input[type="text"],
+.personal-info input[type="date"],
+.personal-info input[type="email"],
+.personal-info input[type="tel"] {
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.personal-info input:focus,
+.personal-info input[type="date"]:focus,
+.personal-info input[type="email"]:focus,
+.personal-info input[type="tel"]:focus {
+  outline: none;
+  border-color: #7da2a9;
+  box-shadow: 0 0 0 2px rgba(125, 162, 169, 0.2);
+}
+
+.personal-info button {
+  background-color: #5c90d2;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-right: 10px;  /* Ensure spacing between buttons */
+}
+
+.personal-info button:hover {
+  background-color: #3b6ea5;
+}
+
+.save-btn {
+  background-color: #4CAF50; /* Green for save */
+}
+
+.save-btn:hover {
+  background-color: #45a049; /* Darker green on hover */
+}
+
+.cancel-btn {
+  background-color: #f44336; /* Red for cancel */
+}
+
+.cancel-btn:hover {
+  background-color: #d32f2f; /* Darker red on hover */
+}
+
+@media (max-width: 768px) {
+  .personal-info {
+      padding: 1rem;
+  }
+}

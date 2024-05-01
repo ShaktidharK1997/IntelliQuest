@@ -1,26 +1,64 @@
-// src/contexts/AuthContext.js
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
-const AuthContext = createContext();
+const AuthContext = createContext(null);
 
-export function useAuth() {
-  return useContext(AuthContext);
-}
+const safeJSONParse = (str, defaultValue = null) => {
+    try {
+        return JSON.parse(str) || defaultValue;
+    } catch (e) {
+        console.log("Parsing error: ", e);
+        return defaultValue;
+    }
+};
+
+export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState(null);
+    const [authState, setAuthState] = useState({
+        user: safeJSONParse(localStorage.getItem('user'), {}),
+        tokens: safeJSONParse(localStorage.getItem('tokens'), {}),
+    });
 
-  const signIn = (user) => {
-    setCurrentUser(user);
-  };
+    useEffect(() => {
+        localStorage.setItem('user', JSON.stringify(authState.user || {}));
+        localStorage.setItem('tokens', JSON.stringify(authState.tokens || {}));
+    }, [authState]);
 
-  const signOut = () => {
-    setCurrentUser(null);
-  };
+    const signIn = async ({ email, password }) => {
+        try {
+            const response = await fetch('http://localhost:8000/IntelliQuest_v1/signin/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password }),
+            });
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to sign in');
+            }
+            const data = await response.json();
+            console.log(data);
+            setAuthState({
+                user: data.email, // this should be the email from the response
+                tokens: {
+                    access: data.access, // the access token
+                    refresh: data.refresh // the refresh token
+                }
+            });
+        } catch (error) {
+            console.error('Login failed:', error);
+            throw error;
+        }
+    };
 
-  return (
-    <AuthContext.Provider value={{ currentUser, signIn, signOut }}>
-      {children}
-    </AuthContext.Provider>
-  );
+    const signOut = () => {
+        setAuthState({ user: null, tokens: null });
+        localStorage.removeItem('user');
+        localStorage.removeItem('tokens');
+    };
+
+    return (
+        <AuthContext.Provider value={{ authState, signIn, signOut }}>
+            {children}
+        </AuthContext.Provider>
+    );
 };
