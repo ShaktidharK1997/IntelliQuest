@@ -8,6 +8,8 @@ function SignUpPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(''); // Add an error state
   let navigate = useNavigate();
+  const base_url = `${window.location.protocol}//${window.location.hostname}:8000`;
+  const api_url = `${base_url}/IntelliQuest_v1/signup/`;
 
   const isValidEmail = (email) => {
     return /\S+@\S+\.\S+/.test(email); // Simple regex for email validation
@@ -33,7 +35,7 @@ function SignUpPage() {
     }
 
     try {
-      const response = await fetch('http://localhost:8000/IntelliQuest_v1/signup/', {
+      const response = await fetch(api_url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

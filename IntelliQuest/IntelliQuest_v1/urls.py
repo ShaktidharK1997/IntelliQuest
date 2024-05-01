@@ -1,7 +1,7 @@
 from django.urls import path, include
 
 from . import views
-from .views import CreateUserView, LoginView, UserProfileView, EducationView, ExperienceView, PublicationsView, UpdateProfilePictureView
+from .views import CreateUserView, LoginView, UserProfileView, EducationView, ExperienceView, PublicationsView, UpdateProfilePictureView, BookmarkedView
 
 from rest_framework.routers import DefaultRouter
 
@@ -30,10 +30,9 @@ urlpatterns = [
 
     path('myprofile/publications/<str:email>/', PublicationsView.as_view(), name='publications-list-create'),
     path('myprofile/publications/<str:email>/<int:pub_id>/', PublicationsView.as_view(), name='publications-update-delete'),
-    
-    
 
-
+    path('myprofile/bookmarked/<str:email>/', BookmarkedView.as_view(), name='get_post_bookmarked'),
+    path('myprofile/bookmarked/<str:email>/<str:paper_id>/', BookmarkedView.as_view(), name='update_delete_bookmarked'),
 
 
 ]

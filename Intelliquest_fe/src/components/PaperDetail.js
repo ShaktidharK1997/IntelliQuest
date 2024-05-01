@@ -19,15 +19,21 @@ function PaperDetail() {
   const [showPDF, setShowPDF] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [selectedAuthor, setSelectedAuthor] = useState({});
+  const base_url = `${window.location.protocol}//${window.location.hostname}:8000`;
+  const [isBookmarked, setIsBookmarked] = useState(false);
+
 
   //const [currentUser] = authState.user;
   const paperId = new URLSearchParams(location.search).get('paperid');
   const source = new URLSearchParams(location.search).get('source');
 
+  const apiUrl = `${base_url}/IntelliQuest_v1/paper/?paperid=${paperId}&source=${source}`;
+
+
   useEffect(() => {
     const fetchPaperDetails = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/IntelliQuest_v1/paper/?paperid=${paperId}&source=${source}`);
+        const response = await fetch(apiUrl);
         const data = await response.json();
         if (data) {
           setPaper(data);
@@ -46,9 +52,42 @@ function PaperDetail() {
     fetchPaperDetails();
   }, [paperId]);
 
-  const bookmarkPaper = () => {
+  const bookmarkPaper = async () => {
     console.log("Bookmarking paper", paperId);
-    // Implement bookmarking logic here
+  
+    // Assuming you need to send the paper ID and other details to the API
+    const bookmarkData = {
+      paperID: paperId,
+      title: paper.title,
+      year: paper.year,
+      papersource: source  // Assuming 'source' contains the source of the paper
+    };
+  
+    // URL to your API endpoint that handles the creation of bookmarks
+    const bookmarkUrl = `${base_url}/IntelliQuest_v1/myprofile/bookmarked/${authState.user}/`;
+  
+    try {
+      const response = await fetch(bookmarkUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          // 'Authorization': `Bearer ${authState.tokens.access}`, // Uncomment if using token based auth
+        },
+        body: JSON.stringify(bookmarkData)
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to bookmark paper.');
+      }
+  
+      console.log("Paper bookmarked successfully.");
+      setIsBookmarked(true);
+      // You might want to update local state to reflect the bookmark
+    } catch (error) {
+      console.error("Error bookmarking paper:", error.message);
+      setError(error.message);
+    }
   };
 
   const handleAuthorClick = async (author) => {
@@ -159,7 +198,9 @@ function PaperDetail() {
             </>
           )}
           </button>
-          <button onClick={bookmarkPaper}>Bookmark Paper</button>
+          <button onClick={bookmarkPaper} className={isBookmarked ? "bookmark-button bookmarked" : "bookmark-button"}>
+              Bookmark Paper
+          </button>
           <button onClick={seeRelatedPapers}>See Related Papers</button>
         </div>
         {showPopup && (

@@ -13,6 +13,10 @@ function PersonalInfo() {
   const [data, setData] = useState(null);
   const [initialState, setInitialState] = useState(null);
 
+  const base_url = `${window.location.protocol}//${window.location.hostname}:8000`;
+  const api_url = `${base_url}/IntelliQuest_v1/myprofile/${authState.user}/`;
+  const profile_api_url = `${base_url}/IntelliQuest_v1/myprofile/update_picture/${authState.user}/`;
+
   useEffect(() => {
     if (!authState.user) {
       navigate('/signin');
@@ -24,7 +28,7 @@ function PersonalInfo() {
   const fetchProfileData = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8000/IntelliQuest_v1/myprofile/${authState.user}/`,
+        api_url,
         {
           method: 'GET',
       
@@ -69,7 +73,7 @@ function PersonalInfo() {
   
     try {
       const response = await fetch(
-        `http://localhost:8000/IntelliQuest_v1/myprofile/update_picture/${authState.user}/`,
+        profile_api_url,
         {
           method: 'PUT',
             // 'Authorization': `Bearer ${authState.tokens.access}`,
@@ -121,7 +125,7 @@ function PersonalInfo() {
     try {
       if (Object.keys(updatedFields).length > 0) {
         const response = await fetch(
-          `http://localhost:8000/IntelliQuest_v1/myprofile/${authState.user}/`,
+          api_url,
           {
             method: 'PATCH',
             headers: {

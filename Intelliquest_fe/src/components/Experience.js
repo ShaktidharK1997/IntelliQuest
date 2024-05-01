@@ -9,6 +9,9 @@ function Experience() {
   const [error, setError] = useState(null);
   const { authState } = useAuth();
   const navigate = useNavigate();
+  const base_url = `${window.location.protocol}//${window.location.hostname}:8000`;
+  const api_url = `${base_url}/IntelliQuest_v1/myprofile/experience/`;
+  const api_url_with_email = `${base_url}/IntelliQuest_v1/myprofile/experience/${authState.user}/`;
 
   const defaultExperience = {
     id: null,
@@ -22,6 +25,7 @@ function Experience() {
     isEditing: true,
   };
 
+
   useEffect(() => {
     if (!authState.user) {
       navigate('/signin');
@@ -33,7 +37,7 @@ function Experience() {
   const fetchExperiences = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:8000/IntelliQuest_v1/myprofile/experience/${authState.user}/`, {
+      const response = await fetch(api_url_with_email, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -64,7 +68,8 @@ function Experience() {
   const saveExperience = async (index) => {
     const experience = experiences[index];
     const userEmail = encodeURIComponent(authState.user); // URL encode the email
-    const url = experience.id ? `http://localhost:8000/IntelliQuest_v1/myprofile/experience/${userEmail}/${experience.id}/` : `http://localhost:8000/IntelliQuest_v1/myprofile/experience/${userEmail}/`;
+    const url = experience.id ? `${api_url}${userEmail}/${experience.id}/` 
+    : `${api_url}${userEmail}/`;
     const method = experience.id ? 'PUT' : 'POST';
 
     try {
@@ -101,7 +106,7 @@ function Experience() {
       setExperiences((prev) => prev.filter((_, i) => i !== index));
       return;
     }
-    const url = `http://localhost:8000/IntelliQuest_v1/myprofile/experience/${authState.user}/${experience.id}`;
+    const url = `${api_url}${authState.user}/${experience.id}`;
     try {
       const response = await fetch(url, {
         method: 'DELETE',
