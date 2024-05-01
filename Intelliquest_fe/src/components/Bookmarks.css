@@ -1,0 +1,117 @@
+/* BookmarkedPapers.css */
+.bookmarked-papers-container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Soft shadow for depth */
+  }
+  
+  .bookmark-entry {
+    margin-bottom: 20px;
+    background: #f7f7f7;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* Lighter shadow for each entry */
+  }
+  
+  .bookmark-entry input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px; /* Slightly larger font for better readability */
+  }
+  
+  .bookmark-entry button {
+    margin-right: 10px; /* Space between buttons */
+    padding: 8px 16px; /* Better padding for usability */
+    margin-top: 10px; /* Space above the button */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s; /* Smooth transition for hover effects */
+  }
+  
+  /* Styles for specific button functionalities */
+  .bookmark-entry .save-btn {
+    background-color: #4CAF50; /* Green for Save */
+  }
+  
+  .bookmark-entry .save-btn:hover {
+    background-color: #45a049; /* Darker green on hover */
+  }
+  
+  .bookmark-entry .cancel-btn {
+    background-color: #f44336; /* Red for Cancel */
+  }
+  
+  .bookmark-entry .cancel-btn:hover {
+    background-color: #d32f2f; /* Darker red on hover */
+  }
+  
+  .bookmark-entry .edit-btn, /* Additional class for edit button */
+  .bookmark-entry .remove-btn { /* Additional class for remove button */
+    background-color: #ff4500; /* Orangish red for noticeable actions */
+  }
+  
+  .bookmark-entry .edit-btn:hover,
+  .bookmark-entry .remove-btn:hover {
+    background-color: #cc3700; /* Slightly darker shade on hover */
+  }
+  
+  button.add-bookmark-btn {
+    display: block;
+    width: auto; /* Auto width based on content */
+    padding: 10px 20px; /* Sufficient padding around text */
+    margin: 20px auto 0; /* Margin for top auto centering */
+    background-color: #007bff; /* Standard primary blue for 'Add' button */
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  button.add-bookmark-btn:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+  }
+  
+
+  /* Styles for the Recommended Papers container */
+.recommended-papers-container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    background: #f7f7f7;  /* Light grey background for the container */
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);  /* Soft shadow for depth */
+  }
+  
+  .recommended-paper-entry {
+    margin-bottom: 20px; /* Space between each recommended paper */
+    background: white;  /* White background for each paper entry */
+    padding: 15px;
+    border-radius: 5px; /* Rounded corners for paper entries */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* Light shadow for each paper entry */
+  }
+  
+  .recommended-paper-entry div {
+    margin-bottom: 10px; /* Space between title and year */
+    font-size: 16px; /* Font size for text within paper entries */
+  }
+  
+  .recommended-paper-entry a {
+    color: #007bff; /* Bootstrap primary blue for links */
+    text-decoration: none; /* Remove underline from links */
+    font-weight: bold; /* Make paper title bold */
+  }
+  
+  .recommended-paper-entry a:hover {
+    text-decoration: underline; /* Underline on hover for better user feedback */
+  }
+  
+  .recommended-paper-entry .year {
+    color: #666; /* Lighter text color for less emphasis on the year */
+    font-size: 14px; /* Slightly smaller font size for the year */
+  }
+  

@@ -28,8 +28,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 # Local imports
 from .authentication import EmailBackend, get_tokens_for_user
-from .models import CustomUser, Education, Experience, Paper, PaperDetail, PersonalProfile, Publications, Author
-from .serializers import EducationSerializer, ExperienceSerializer, ProfileSerializer, PublicationsSerializer, UserSerializer
+from .models import CustomUser, Education, Experience, Paper, PaperDetail, PersonalProfile, Publications, Author, Bookmarked
+from .serializers import EducationSerializer, ExperienceSerializer, ProfileSerializer, PublicationsSerializer, UserSerializer, BookmarkedSerializer
 
 # Logger configuration
 logger = logging.getLogger(__name__)
@@ -538,3 +538,43 @@ def search_articles(request):
 
     return JsonResponse({'results': results})
 
+
+class BookmarkedView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, email):
+        user = get_object_or_404(CustomUser, email=email)
+        profile = get_object_or_404(PersonalProfile, user=user)
+        bookmarks = Bookmarked.objects.filter(personal_info=profile)
+        serializer = BookmarkedSerializer(bookmarks, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, email):
+        user = get_object_or_404(CustomUser, email=email)
+        profile = get_object_or_404(PersonalProfile, user=user)
+        data = request.data.copy()
+        data['personal_info'] = profile.pk
+        serializer = BookmarkedSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, email, paper_id):
+        user = get_object_or_404(CustomUser, email=email)
+        profile = get_object_or_404(PersonalProfile, user=user)
+        bookmark = get_object_or_404(Bookmarked, paperID=paper_id, personal_info=profile)
+        serializer = BookmarkedSerializer(bookmark, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, email, paper_id):
+        user = get_object_or_404(CustomUser, email=email)
+        profile = get_object_or_404(PersonalProfile, user=user)
+        bookmark = get_object_or_404(Bookmarked, paperID=paper_id, personal_info=profile)
+        bookmark.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

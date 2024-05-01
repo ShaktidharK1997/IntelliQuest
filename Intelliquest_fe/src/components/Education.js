@@ -9,6 +9,9 @@ function Education() {
   const [error, setError] = useState(null);
   const { authState } = useAuth();
   const navigate = useNavigate();
+  const base_url = `${window.location.protocol}//${window.location.hostname}:8000`;
+  const api_url = `${base_url}/IntelliQuest_v1/myprofile/education/`;
+  const api_url_with_email = `${base_url}/IntelliQuest_v1/myprofile/education/${authState.user}/`;
 
   const defaultEducation = {
     id: null,
@@ -33,7 +36,7 @@ function Education() {
   const fetchEducations = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:8000/IntelliQuest_v1/myprofile/education/${authState.user}/`, {
+      const response = await fetch(api_url_with_email, {
         method: 'GET',
         headers: {
           // 'Authorization': `Bearer ${authState.tokens.access}`,
@@ -73,7 +76,7 @@ const removeEducation = async (index) => {
   const userEmail = encodeURIComponent(authState.user); // URL encode the email
 
   if (education.id) {
-    const url = `http://localhost:8000/IntelliQuest_v1/myprofile/education/${userEmail}/${education.id}/`;
+    const url = `${api_url_with_email}${education.id}/`;
     try {
       const response = await fetch(url, {
         method: 'DELETE',
@@ -99,7 +102,7 @@ const saveEducation = async (index) => {
   const education = educations[index];
   const userEmail = authState.user; // URL encode the email to safely include it in the URL
 
-  const baseEndpoint = `http://localhost:8000/IntelliQuest_v1/myprofile/education/${userEmail}/`;
+  const baseEndpoint = api_url_with_email;
   const url = education.id ? `${baseEndpoint}${education.id}/` : baseEndpoint;
   const method = education.id ? 'PUT' : 'POST';
 

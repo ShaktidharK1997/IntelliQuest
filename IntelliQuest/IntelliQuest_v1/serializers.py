@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
-from .models import PersonalProfile, Education, Experience, Publications
+from .models import PersonalProfile, Education, Experience, Publications, Bookmarked
 
 User = get_user_model()
 
@@ -75,6 +75,14 @@ class ExperienceSerializer(serializers.ModelSerializer):
 class PublicationsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Publications
+        fields = '__all__'
+        extra_kwargs = {
+            'personal_profile': {'read_only': True}
+        }
+
+class BookmarkedSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Bookmarked
         fields = '__all__'
         extra_kwargs = {
             'personal_profile': {'read_only': True}

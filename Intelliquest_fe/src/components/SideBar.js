@@ -39,6 +39,14 @@ function Sidebar() {
               Published Articles
             </NavLink>
           </li>
+          <li>
+            <NavLink
+              to="/myprofile/bookmarks"
+              className={({ isActive }) => (isActive ? 'active' : undefined)}
+            >
+              Bookmarks
+            </NavLink>
+          </li>
         </ul>
       </nav>
     </div>

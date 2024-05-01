@@ -10,6 +10,10 @@ function Publications() {
   const { authState } = useAuth();
   const navigate = useNavigate();
 
+  const base_url = `${window.location.protocol}//${window.location.hostname}:8000`;
+  const api_url = `${base_url}/IntelliQuest_v1/myprofile/publications/${authState.user}/`;
+
+
   const defaultPublication = {
     id: null,
     title: '',
@@ -30,7 +34,7 @@ function Publications() {
   const fetchPublications = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:8000/IntelliQuest_v1/myprofile/publications/${authState.user}/`, {
+      const response = await fetch(api_url, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -68,7 +72,7 @@ function Publications() {
       setPublications((prev) => prev.filter((_, i) => i !== index));
       return;
     }
-    const url = `http://localhost:8000/IntelliQuest_v1/myprofile/publications/${authState.user}/${publication.id}/`;
+    const url = `${api_url}/${publication.id}/`;
     try {
       const response = await fetch(url, {
         method: 'DELETE',
@@ -87,8 +91,8 @@ function Publications() {
   const savePublication = async (index) => {
     const publication = publications[index];
     const url = publication.id
-      ? `http://localhost:8000/IntelliQuest_v1/myprofile/publications/${authState.user}/${publication.id}/`
-      : `http://localhost:8000/IntelliQuest_v1/myprofile/publications/${authState.user}/`;
+      ? `${api_url}/${publication.id}/`
+      : api_url;
     const method = publication.id ? 'PUT' : 'POST';
 
     try {

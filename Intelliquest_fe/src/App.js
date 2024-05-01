@@ -10,6 +10,7 @@ import PersonalInfo from './components/PersonalInfo';
 import Education from './components/Education';
 import Experience from './components/Experience';
 import Publications from './components/Publications';
+import Bookmarks from './components/Bookmarks';
 import { AuthProvider } from './contexts/AuthContext';
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
                                 <Route path="education" element={<Education />} />
                                 <Route path="publications" element={<Publications />} />
                                 <Route path="experience" element={<Experience />} />
+                                <Route path="bookmarks" element={<Bookmarks />} />
                                 {/* Additional nested routes can be configured here */}
                                 {/* <Route path="experience" element={<Experience />} />
                                 <Route path="published-articles" element={<Publications />} /> */}
