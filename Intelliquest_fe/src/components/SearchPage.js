@@ -103,12 +103,12 @@ function SearchPage() {
       filteredResults.sort((a, b) => parseInt(b.year) - parseInt(a.year));
     }
 
-    // Placeholder: Sorting by citations - Uncomment and modify once citation data is available
-    // if (sortByCitations === 'ascending') {
-    //   filteredResults.sort((a, b) => a.citations - b.citations);
-    // } else if (sortByCitations === 'descending') {
-    //   filteredResults.sort((a, b) => b.citations - a.citations);
-    // }
+    // Sorting by citations
+    if (sortByCitations === 'ascending') {
+      filteredResults.sort((a, b) => a.citationCount - b.citationCount);
+    } else if (sortByCitations === 'descending') {
+      filteredResults.sort((a, b) => b.citationCount - a.citationCount);
+    }
 
       setResults(filteredResults);
       
@@ -300,7 +300,8 @@ function SearchPage() {
                 </h4>
                 {renderAbstract(paper, index)}
                 <p><strong>Authors:</strong> {paper.authors.map(author => author.name).join(', ')}</p>
-                <p>Year : {paper.year}</p>
+                <p><strong>Citations:</strong> {paper.citationCount === 0 ? 'Not Available' : paper.citationCount}</p>
+                <p><strong>Year :</strong>{paper.year}</p>
               </div>
             ))
           ) : (
