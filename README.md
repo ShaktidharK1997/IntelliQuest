@@ -61,6 +61,29 @@ Here are some major features of our project.
 
 The application will be available at `http://localhost:3000`. This setup uses Docker to encapsulate the application environment, ensuring consistency across different development and production setups.
 
+## High Level Context Analysis
+
+<img width="623" alt="High Level Context Analysis Diagram" src="https://github.com/ShaktidharK1997/SWProject/assets/59786881/c59ca856-67ba-4cce-b3fc-b571cc7b9254">
+
+## High Level Diagrams
+
+### Home Page and Basic Search
+
+<img width="622" alt="Home Page and Basic Search" src="https://github.com/ShaktidharK1997/SWProject/assets/59786881/ce729f07-c209-4f26-8173-362676503040">
+
+### Paper Info Page
+
+<img width="619" alt="Paper Info Page" src="https://github.com/ShaktidharK1997/SWProject/assets/59786881/cb78e9f3-a528-4efb-8cfd-b6e340c792ef">
+
+### User Profile
+
+<img width="621" alt="User Profile" src="https://github.com/ShaktidharK1997/SWProject/assets/59786881/3a27ef66-546f-422f-803a-f55bbc1a15e1">
+
+### Account Registration and Login
+
+<img width="617" alt="Account Registration and Login" src="https://github.com/ShaktidharK1997/SWProject/assets/59786881/edf5efaf-7a3d-4a42-809c-6ca53f81ad9d">
+
+
 
 
 
