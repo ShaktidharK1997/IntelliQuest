@@ -11,7 +11,7 @@ import AuthorPopup from './AuthorPopup';
 function PaperDetail() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { currentUser } = useAuth();
+  const { authState } = useAuth();
   const [paper, setPaper] = useState(null);
   const [error, setError] = useState('');
   const [recommendedPapers, setRecommendedPapers] = useState([]);
@@ -20,7 +20,7 @@ function PaperDetail() {
   const [showPopup, setShowPopup] = useState(false);
   const [selectedAuthor, setSelectedAuthor] = useState({});
 
-  
+  //const [currentUser] = authState.user;
   const paperId = new URLSearchParams(location.search).get('paperid');
   const source = new URLSearchParams(location.search).get('source');
 

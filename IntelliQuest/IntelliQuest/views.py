@@ -1,6 +1,5 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-import random
 
 def home(request):
     return render(request, 'home.html')
@@ -16,5 +15,3 @@ def settings(request):
 def search_results(request):
     # Placeholder view for search results
     return HttpResponse("Search results would appear here.")
-
-

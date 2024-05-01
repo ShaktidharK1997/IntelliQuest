@@ -31,7 +31,7 @@ const getRandomTopics = () => {
 
 function SearchPage() {
   const [showDropdown, setShowDropdown] = useState(false);
-  const { currentUser, signOut } = useAuth();
+  const { authState, signOut } = useAuth();
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
   const [yearFrom, setYearFrom] = useState('');
   const [yearTo, setYearTo] = useState('');
@@ -45,7 +45,7 @@ function SearchPage() {
   const [sortByYear, setSortByYear] = useState('');
   const [sortByCitations, setSortByCitations] = useState('');
   const [randomTopics, setRandomTopics] = useState([]);
-
+  const currentUser = authState.user;
   // Link to signin page
   let navigate = useNavigate();
   const handleSignInClick = () => {
@@ -54,7 +54,7 @@ function SearchPage() {
 
   useEffect(() => {
     if (currentUser) {
-      const savedSearches = JSON.parse(localStorage.getItem(`recentSearches_${currentUser.id}`));
+      const savedSearches = JSON.parse(localStorage.getItem(`recentSearches_${currentUser}`));
       if (savedSearches) {
         setRecentSearches(savedSearches);
       }
@@ -103,12 +103,12 @@ function SearchPage() {
       filteredResults.sort((a, b) => parseInt(b.year) - parseInt(a.year));
     }
 
-    // Placeholder: Sorting by citations - Uncomment and modify once citation data is available
-    // if (sortByCitations === 'ascending') {
-    //   filteredResults.sort((a, b) => a.citations - b.citations);
-    // } else if (sortByCitations === 'descending') {
-    //   filteredResults.sort((a, b) => b.citations - a.citations);
-    // }
+    // Sorting by citations
+    if (sortByCitations === 'ascending') {
+      filteredResults.sort((a, b) => a.citationCount - b.citationCount);
+    } else if (sortByCitations === 'descending') {
+      filteredResults.sort((a, b) => b.citationCount - a.citationCount);
+    }
 
       setResults(filteredResults);
       
@@ -116,7 +116,7 @@ function SearchPage() {
       setRecentSearches(prevSearches => {
         const updatedSearches = [query, ...prevSearches.filter(q => q !== query)].slice(0, 5);
         if (currentUser) {
-          localStorage.setItem(`recentSearches_${currentUser.id}`, JSON.stringify(updatedSearches));
+          localStorage.setItem(`recentSearches_${currentUser}`, JSON.stringify(updatedSearches));
         }
         return updatedSearches;
       });
@@ -175,9 +175,9 @@ function SearchPage() {
           </button>
           {showDropdown && (
             <div className="dropdown">
-              <button onClick={() => console.log('View My Profile')}>View My Profile</button>
+              <button onClick={() => navigate('/myprofile')}>View My Profile</button>
               <button onClick={signOut}>Sign Out</button>
-              <button onClick={() => console.log('Settings')}>Settings</button>
+              <button onClick={() => console.log('Settings')}>Support</button>
             </div>
           )}
         </>
@@ -300,7 +300,8 @@ function SearchPage() {
                 </h4>
                 {renderAbstract(paper, index)}
                 <p><strong>Authors:</strong> {paper.authors.map(author => author.name).join(', ')}</p>
-                <p>Year : {paper.year}</p>
+                <p><strong>Citations:</strong> {paper.citationCount === 0 ? 'Not Available' : paper.citationCount}</p>
+                <p><strong>Year :</strong>{paper.year}</p>
               </div>
             ))
           ) : (

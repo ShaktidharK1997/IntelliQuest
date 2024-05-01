@@ -1,0 +1,112 @@
+/* Experience.css */
+.experience-container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adds shadow for better UI definition */
+}
+
+.experience-entry {
+    margin-bottom: 20px;
+    background: #f7f7f7;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05); /* Subtle shadow for depth */
+}
+
+.experience-entry input,
+.experience-entry textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.education-text{
+    width: auto; /* Adjust width for checkbox */
+    margin-right: 10px; /* Space before the label text */
+    vertical-align: middle; /* Aligns checkbox vertically to middle of text */
+    
+}
+
+.experience-entry input[type="checkbox"] {
+    width: auto; /* Adjust width for checkbox */
+    margin-right: 10px; /* Space before the label text */
+    vertical-align: middle; /* Aligns checkbox vertically to middle of text */
+}
+
+.experience-entry label {
+    display: block;
+    margin-bottom: 10px;
+    color: #333; /* Slightly darker text for better readability */
+    font-size: 14px; /* Ensures text is neither too big nor too small */
+}
+
+.experience-entry button {
+    padding: 8px 16px; /* Uniform padding */
+    margin-right: 10px; /* Space between buttons */
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s; /* Smooth transition for hover effects */
+}
+
+/* Specific styles for different buttons */
+.save-btn, .cancel-btn, .edit-btn, .remove-btn {
+    color: white;
+    border: none;
+}
+
+.save-btn {
+    background-color: #4CAF50; /* Green for Save */
+}
+
+.cancel-btn {
+    background-color: #f44336; /* Red for Cancel */
+}
+
+.edit-btn {
+    background-color: #FFA500; /* Orange for Edit */
+}
+
+.remove-btn {
+    background-color: #f44336; /* Red for Remove */
+}
+
+.save-btn:hover,
+.cancel-btn:hover,
+.edit-btn:hover,
+.remove-btn:hover {
+    opacity: 0.85; /* Slight opacity change for hover */
+}
+
+button.add-experience-btn {
+    display: block;
+    width: auto; /* Auto width based on content */
+    padding: 10px 20px; /* Sufficient padding around text */
+    margin: 20px auto 10px; /* Margin for top auto centering, less bottom margin */
+    background-color: #5c90d2; /* Consistent blue background for add button */
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button.add-experience-btn:hover {
+    background-color: #4072a0; /* Darker blue on hover */
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .experience-container {
+        padding: 10px;
+    }
+
+    .experience-entry {
+        padding: 10px;
+    }
+
+    .experience-entry input,
+    .experience-entry textarea {
+        padding: 8px;
+    }
+}
