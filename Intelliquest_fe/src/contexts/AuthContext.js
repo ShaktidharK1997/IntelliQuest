@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext(null);
+const base_url = `${window.location.protocol}//${window.location.hostname}:8000`;
+const api_url = `${base_url}/IntelliQuest_v1/signin/`;
 
 const safeJSONParse = (str, defaultValue = null) => {
     try {
@@ -26,7 +28,7 @@ export const AuthProvider = ({ children }) => {
 
     const signIn = async ({ email, password }) => {
         try {
-            const response = await fetch('http://localhost:8000/IntelliQuest_v1/signin/', {
+            const response = await fetch(api_url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password }),

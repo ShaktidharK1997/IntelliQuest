@@ -151,3 +151,27 @@
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 999;
 }
+
+
+.bookmark-button {
+  padding: 10px 15px;
+  font-size: 17px;
+  background-color: var(--primary-color);
+  color: var(--text-color-white);
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.bookmarked {
+  background-color: #28a745; /* Green color when bookmarked */
+}
+
+.bookmark-button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
+.bookmarked:hover {
+  background-color: #218838; /* Darker green on hover */
+}

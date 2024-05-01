@@ -46,6 +46,8 @@ function SearchPage() {
   const [sortByCitations, setSortByCitations] = useState('');
   const [randomTopics, setRandomTopics] = useState([]);
   const currentUser = authState.user;
+  const base_url = `${window.location.protocol}//${window.location.hostname}:8000`;
+
   // Link to signin page
   let navigate = useNavigate();
   const handleSignInClick = () => {
@@ -80,13 +82,14 @@ function SearchPage() {
 
   const handleSearch = async () => {
     // Replace with your Django API endpoint
-    const apiUrl = `http://127.0.0.1:8000/IntelliQuest_v1/search/?query=${query}`;
-    console.log(apiUrl);
+    const apiUrl = `${base_url}/IntelliQuest_v1/search/?query=${query}`;
+
     try {
+
       const response = await fetch(apiUrl);
       const data = await response.json();
       setResults(data.results);
-      console.log(data.results);
+
 
       const filteredResults = data.results.filter((paper) => {
         const year = parseInt(paper.year);

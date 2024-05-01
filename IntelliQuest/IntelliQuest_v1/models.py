@@ -88,6 +88,18 @@ class Publications(models.Model):
     authors = models.CharField(max_length=200)
     abstract = models.TextField()
 
+
+class Bookmarked(models.Model):
+    personal_info = models.ForeignKey(PersonalProfile, related_name='bookmarks', on_delete=models.CASCADE)
+    paperID = models.CharField(max_length=50)
+    year = models.IntegerField(null=True)
+    title = models.CharField(max_length=512)
+    papersource = models.BigIntegerField(null=True)
+
+    class Meta:
+        unique_together = (('personal_info', 'paperID'),)
+        verbose_name_plural = "Bookmarked Papers"
+
 class Author(models.Model):
     authorID = models.CharField(primary_key=True, max_length=50)
     name = models.CharField(max_length=150)
