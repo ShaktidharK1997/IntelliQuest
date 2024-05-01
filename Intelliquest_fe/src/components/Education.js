@@ -171,7 +171,7 @@ const toggleEditing = (index) => {
               <button type="button" onClick={() => toggleEditing(index)} className="cancel-btn">Cancel</button>
             </form>
           ) : (
-            <>
+            <div className='education-text'>
               <div>University: {education.university}</div>
               <div>Degree: {education.degree}</div>
               <div>Course: {education.course}</div>
@@ -181,7 +181,7 @@ const toggleEditing = (index) => {
               <div>GPA: {education.gpa}</div>
               <button onClick={() => toggleEditing(index)}>Edit</button>
               <button onClick={() => removeEducation(index)}>Remove</button>
-            </>
+            </div>
           )}
         </div>
       ))}

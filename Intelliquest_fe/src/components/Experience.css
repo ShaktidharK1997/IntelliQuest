@@ -23,6 +23,13 @@
     border-radius: 4px;
 }
 
+.education-text{
+    width: auto; /* Adjust width for checkbox */
+    margin-right: 10px; /* Space before the label text */
+    vertical-align: middle; /* Aligns checkbox vertically to middle of text */
+    
+}
+
 .experience-entry input[type="checkbox"] {
     width: auto; /* Adjust width for checkbox */
     margin-right: 10px; /* Space before the label text */
